@@ -275,7 +275,7 @@ class ActorAcquiredItemClientEvent(ClientEvent):
         return cls(
             actor=data["actor"],
             secondaryActor=data["secondaryActor"],
-            item=Item.from_dict(data["item"]),
+            item=Item.from_dict(data["itemDict"]),
             acquireMethod=data["acquireMethod"],
         )
 
@@ -284,6 +284,6 @@ class ActorAcquiredItemClientEvent(ClientEvent):
         return {
             "actor": self.actor,
             "secondaryActor": self.secondaryActor,
-            "item": self.item.marshal(),
+            "itemDict": self.item.marshal(),
             "acquireMethod": self.acquireMethod,
         }
