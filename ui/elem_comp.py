@@ -1,24 +1,6 @@
 # coding=utf-8
 #
 # from weakref import WeakValueDictionary
-from mod.client.ui.screenNode import ScreenNode
-from mod.client.ui.controls.baseUIControl import BaseUIControl
-from mod.client.ui.controls.minimapUIControl import MiniMapUIControl
-from mod.client.ui.controls.inputPanelUIControl import InputPanelUIControl
-from mod.client.ui.controls.itemRendererUIControl import ItemRendererUIControl
-from mod.client.ui.controls.neteaseComboBoxUIControl import NeteaseComboBoxUIControl
-from mod.client.ui.controls.progressBarUIControl import ProgressBarUIControl
-from mod.client.ui.controls.buttonUIControl import ButtonUIControl
-from mod.client.ui.controls.switchToggleUIControl import SwitchToggleUIControl
-from mod.client.ui.controls.imageUIControl import ImageUIControl
-from mod.client.ui.controls.stackPanelUIControl import StackPanelUIControl
-from mod.client.ui.controls.selectionWheelUIControl import SelectionWheelUIControl
-from mod.client.ui.controls.textEditBoxUIControl import TextEditBoxUIControl
-from mod.client.ui.controls.gridUIControl import GridUIControl
-from mod.client.ui.controls.labelUIControl import LabelUIControl
-from mod.client.ui.controls.neteasePaperDollUIControl import NeteasePaperDollUIControl
-from mod.client.ui.controls.scrollViewUIControl import ScrollViewUIControl
-from mod.client.ui.controls.sliderUIControl import SliderUIControl
 from ..define import UICtrlPosData, Item
 from ..api.common import ExecLater
 from ..events.client.ui import GridComponentSizeChangedClientEvent
@@ -28,6 +10,7 @@ from .utils import UIPath
 if 0:
     from typing import Callable, Any, Literal
     from .general_screen import ToolDeltaScreen
+    from ._ui_typing import *
 # TYPE_CHECKING END
 
 
@@ -249,7 +232,7 @@ class UItemRenderer(UBaseCtrl):
     def __init__(self, root, base):
         # type: (ToolDeltaScreen, ItemRendererUIControl | None) -> None
         UBaseCtrl.__init__(self, root, base)
-        if not isinstance(base, ItemRendererUIControl):
+        if base is None:
             raise TypeError("expected ItemRendererUIControl, got " + str(type(base)))
         self.base = base
 
@@ -269,7 +252,7 @@ class ULabel(UBaseCtrl):
     def __init__(self, root, base):
         # type: (ToolDeltaScreen, LabelUIControl | None) -> None
         UBaseCtrl.__init__(self, root, base)
-        if not isinstance(base, LabelUIControl):
+        if base is None:
             raise TypeError("expected LabelUIControl, got " + str(type(base)))
         self.base = base
 
@@ -290,7 +273,7 @@ class UImage(UBaseCtrl):
     def __init__(self, root, base):
         # type: (ToolDeltaScreen, ImageUIControl | None) -> None
         UBaseCtrl.__init__(self, root, base)
-        if not isinstance(base, ImageUIControl):
+        if base is None:
             raise TypeError("expected ImageUIControl, got " + str(type(base)))
         self.base = base
 
@@ -317,7 +300,7 @@ class UButton(UBaseCtrl):
     def __init__(self, root, base):
         # type: (ToolDeltaScreen, ButtonUIControl | None) -> None
         UBaseCtrl.__init__(self, root, base)
-        if not isinstance(base, ButtonUIControl):
+        if base is None:
             raise TypeError("expected ButtonUIControl, got " + str(type(base)))
         self.base = base
 
@@ -350,7 +333,7 @@ class UScrollView(UBaseCtrl):
     def __init__(self, root, base):
         # type: (ToolDeltaScreen, ScrollViewUIControl | None) -> None
         UBaseCtrl.__init__(self, root, base)
-        if not isinstance(base, ScrollViewUIControl):
+        if base is None:
             raise TypeError("expected ScrollViewUIControl, got " + str(type(base)))
         self.base = base
 
@@ -362,7 +345,7 @@ class UGrid(UBaseCtrl):
     def __init__(self, root, base):
         # type: (ToolDeltaScreen, GridUIControl | None) -> None
         UBaseCtrl.__init__(self, root, base)
-        if not isinstance(base, GridUIControl):
+        if base is None:
             raise TypeError("expected GridUIControl, got " + str(type(base)))
         self.path = self.base.GetPath()
         grid_comp_size_changed_cbs[self.path] = self.onGridSizeChanged
@@ -412,7 +395,7 @@ class UComboBox(UBaseCtrl):
     def __init__(self, root, base):
         # type: (ToolDeltaScreen, NeteaseComboBoxUIControl | None) -> None
         UBaseCtrl.__init__(self, root, base)
-        if not isinstance(base, NeteaseComboBoxUIControl):
+        if base is None:
             raise TypeError("expected NeteaseComboBoxUIControl, got " + str(type(base)))
         self.base = base
 
@@ -436,7 +419,7 @@ class USlider(UBaseCtrl):
     def __init__(self, root, base):
         # type: (ToolDeltaScreen, SliderUIControl | None) -> None
         UBaseCtrl.__init__(self, root, base)
-        if not isinstance(base, SliderUIControl):
+        if base is None:
             raise TypeError("expected SliderUIControl, got " + str(type(base)))
         self.base = base
 
@@ -452,7 +435,7 @@ class UNeteasePaperDoll(UBaseCtrl):
     def __init__(self, root, base):
         # type: (ToolDeltaScreen, NeteasePaperDollUIControl | None) -> None
         UBaseCtrl.__init__(self, root, base)
-        if not isinstance(base, NeteasePaperDollUIControl):
+        if base is None:
             raise TypeError(
                 "expected NeteasePaperDollUIControl, got " + str(type(base))
             )
@@ -510,7 +493,7 @@ class UTextEditBoxUIControl(UBaseCtrl):
     def __init__(self, root, base):
         # type: (ToolDeltaScreen, TextEditBoxUIControl | None) -> None
         UBaseCtrl.__init__(self, root, base)
-        if not isinstance(base, TextEditBoxUIControl):
+        if base is None:
             raise TypeError("expected TextEditBoxUIControl, got " + str(type(base)))
         self.base = base
 
@@ -526,7 +509,7 @@ class USwitch(UBaseCtrl):
     def __init__(self, root, base):
         # type: (ToolDeltaScreen, SwitchToggleUIControl | None) -> None
         UBaseCtrl.__init__(self, root, base)
-        if not isinstance(base, SwitchToggleUIControl):
+        if base is None:
             raise TypeError("expected SwitchToggleUIControl, got " + str(type(base)))
         self.base = base
 
