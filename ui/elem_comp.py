@@ -162,6 +162,13 @@ class UBaseCtrl(object):
         self.base.SetPosition(xy)
         return self
 
+    def SetAlpha(
+        self,
+        alpha,  # type: float
+    ):
+        self.base.SetAlpha(alpha)
+        return self
+
     def SetSize(
         self,
         xy,  # type: tuple[float, float]
