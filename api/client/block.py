@@ -2,8 +2,6 @@
 from mod.client.extraClientApi import GetEngineCompFactory, GetLevelId
 from ..common.cacher import MethodCacher
 
-if 0:
-    from mod.common.component.blockPaletteComp import BlockPaletteComponent
 
 CF = GetEngineCompFactory()
 
@@ -42,8 +40,10 @@ def GetBlockNameAndAux(pos):
         return b
 
 
-def NewSingleBlockPalette(block_id, aux=0):
-    # type: (str, int) -> BlockPaletteComponent
+def NewSingleBlockPalette(
+    block_id,  # type: str
+    aux=0,  # type: int
+):
     newBlockPalette = GetBlankBlockPalette()
     newBlockPalette.DeserializeBlockPalette({
         "extra": {},
@@ -56,8 +56,11 @@ def NewSingleBlockPalette(block_id, aux=0):
     return newBlockPalette
 
 
-def CombineBlockPaletteToGeometry(palette, geo_name):
-    # type: (BlockPaletteComponent, str) -> str
+def CombineBlockPaletteToGeometry(
+    palette,
+    geo_name,  # type: str
+):
+    # type: (...) -> str
     blockGeometryComp = GetEngineCompFactory().CreateBlockGeometry(GetLevelId())
     return blockGeometryComp.CombineBlockPaletteToGeometry(palette, geo_name)
 

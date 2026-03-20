@@ -4,12 +4,10 @@ from ...define.block import BlockBasicInfo
 from ..common.cacher import MethodCacher
 
 if 0:
-    from mod.common.component.blockPaletteComp import BlockPaletteComponent
+    from mod.server.blockEntityData import BlockEntityData
 
 CF = GetEngineCompFactory()
 
-if 0:
-    from mod.server.blockEntityData import BlockEntityData
 
 _getBlockNew = MethodCacher(lambda: CF.CreateBlockInfo(GetLevelId()).GetBlockNew)
 _getBlockEntityData = MethodCacher(
@@ -174,8 +172,9 @@ def GetActualFacingByDirection(direction, origin_facing):
     return (origin_facing + direction - 2) % 4
 
 
-def NewSingleBlockPalette(block_id):
-    # type: (str) -> BlockPaletteComponent
+def NewSingleBlockPalette(
+    block_id,  # type: str
+):
     newBlockPalette = CF.CreateBlock(GetLevelId()).GetBlankBlockPalette()
     newBlockPalette.DeserializeBlockPalette({
         "extra": {},
