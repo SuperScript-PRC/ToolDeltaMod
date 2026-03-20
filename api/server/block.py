@@ -1,9 +1,10 @@
 # coding=utf-8
-
-from mod.common.component.blockPaletteComp import BlockPaletteComponent
 from mod.server.extraServerApi import GetEngineCompFactory, GetLevelId
 from ...define.block import BlockBasicInfo
 from ..common.cacher import MethodCacher
+
+if 0:
+    from mod.common.component.blockPaletteComp import BlockPaletteComponent
 
 CF = GetEngineCompFactory()
 
