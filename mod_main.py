@@ -28,8 +28,14 @@ class ToolDeltaMod(object):
     def __init__(self):
         pass
 
+    def InitServer(self):
+        pass
+
+    def InitClient(self):
+        pass
+
     @Mod.InitServer()  # pyright: ignore[reportOptionalCall]
-    def initMod(self):
+    def _init_mod_server(self):
         import mod.server.extraServerApi as serverApi
         from .mod_server import ToolDeltaModServer
 
@@ -38,10 +44,11 @@ class ToolDeltaMod(object):
             ToolDeltaModServer.__module__ + "." + ToolDeltaModServer.__name__
         )
         serverApi.RegisterSystem(GetModName(), server_system_name, server_system_path)
+        self.InitServer()
         logger.debug("ToolDelta: Mod server inited: " + server_system_name)
 
     @Mod.InitClient()  # pyright: ignore[reportOptionalCall]
-    def init(self):
+    def _init_mod_client(self):
         import mod.client.extraClientApi as clientApi
         from .mod_client import ToolDeltaModClient
 
@@ -50,6 +57,7 @@ class ToolDeltaMod(object):
             ToolDeltaModClient.__module__ + "." + ToolDeltaModClient.__name__
         )
         clientApi.RegisterSystem(GetModName(), client_system_name, client_system_path)
+        self.InitClient()
         logger.debug("ToolDelta: Mod client inited: " + client_system_name)
 
     @classmethod
