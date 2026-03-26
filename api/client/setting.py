@@ -18,9 +18,19 @@ GetGamepadKeyMappings = MethodCacher(
 GetKeyboardEnum = MethodCacher(lambda: GetMinecraftEnum().KeyBoardType)
 GetGamepadKeyEnum = MethodCacher(lambda: GetMinecraftEnum().GamepadKeyType)
 
+
+def RegisterGeneralKeyMapping(category, name, key, gamepad_key):
+    # type: (str, str, int, int) -> tuple[bool, bool]
+    return (
+        RegisterCustomKeyMapping(name, key, category),
+        RegisterCustomGamepadMapping(name, gamepad_key, category),
+    )
+
+
 __all__ = [
     "RegisterCustomKeyMapping",
     "RegisterCustomGamepadMapping",
+    "RegisterGeneralKeyMapping",
     "GetKeyMappings",
     "GetKeyboardEnum",
     "GetGamepadKeyEnum",
