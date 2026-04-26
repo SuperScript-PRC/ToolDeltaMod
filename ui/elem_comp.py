@@ -25,7 +25,7 @@ class UBaseCtrl(object):
         self._cache_t = None  # type: Any | None
         self._vars = {}
         self._removed = False
-        self._bind_objectref = None # type: ref | None
+        self._bind_objectref = None  # type: ref | None
         self._removed_listeners = []  # type: list[Callable[[], None]]
         self._sub_ctrls = WeakSet()  # type: WeakSet[UBaseCtrl]
         root._add_sub_ctrl(self)
@@ -211,10 +211,13 @@ class UBaseCtrl(object):
             return False
         self._call_destroy(top=True)
         return self._root._remove_sub_ctrl(self, from_top_removal=True)
-    
-    def BindLifeToObject(self, obj):
-        # type: (object) -> None
-        self._bind_objectref = ref(obj, lambda _:self.Remove(warning=False))
+
+    def BindLifeToObject(
+        self,
+        obj,  # type: object
+    ):
+        self._bind_objectref = ref(obj, lambda _: self.Remove(warning=False))
+        return self
 
     def addDestroyListener(self, func):
         # type: (Callable[[], None]) -> None
@@ -249,7 +252,7 @@ class UBaseCtrl(object):
 
     def __hash__(self):
         return hash(self.base.GetPath())
-    
+
     __getitem__ = __div__ = __truediv__
 
     def _call_destroy(self, top=False):
