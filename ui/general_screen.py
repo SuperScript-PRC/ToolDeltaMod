@@ -146,7 +146,7 @@ class ToolDeltaScreen(ClientListenerService):
         def Create(self):
             self._super_screen_ins._on_create()
 
-        def Destory(self):
+        def Destroy(self):
             self._super_screen_ins._on_destroy()
 
         def Update(self):
@@ -161,7 +161,7 @@ class ToolDeltaScreen(ClientListenerService):
         attrs = {
             "__init__": __init__,
             "Create": Create,
-            "Destory": Destory,
+            "Destroy": Destroy,
             "Update": Update,
             "OnActive": OnActive,
             "OnDeactive": OnDeactive,
