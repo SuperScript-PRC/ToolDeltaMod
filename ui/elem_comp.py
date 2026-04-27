@@ -1,6 +1,5 @@
 # coding=utf-8
-#
-from weakref import WeakSet, ref
+from weakref import ref
 from ..define import UICtrlPosData, Item
 from ..api.common import ExecLater
 from ..events.client.ui import GridComponentSizeChangedClientEvent
@@ -19,16 +18,13 @@ class UBaseCtrl(object):
         # type: (ToolDeltaScreen, BaseUIControl | None) -> None
         if base is None:
             raise ValueError("Can't initialize UBaseCtrl: comp is None")
+        self.base = base
         self._root = root
         self._parent_cached = None
-        self.base = base
         self._cache_t = None  # type: Any | None
         self._vars = {}
         self._removed = False
         self._bind_objectref = None  # type: ref | None
-        self._removed_listeners = []  # type: list[Callable[[], None]]
-        self._sub_ctrls = WeakSet()  # type: WeakSet[UBaseCtrl]
-        root._add_sub_ctrl(self)
 
     def asLabel(self):
         # type: () -> ULabel
@@ -201,7 +197,6 @@ class UBaseCtrl(object):
         ctrl = self._root.AddElement(
             element_def_name, element_name, force_update, _parent=self
         )
-        self._sub_ctrls.add(ctrl)
         return ctrl
 
     def Remove(self, warning=True):
@@ -209,8 +204,7 @@ class UBaseCtrl(object):
         if self._removed and warning:
             print("[Warning] control already removed")
             return False
-        self._call_destroy(top=True)
-        return self._root._remove_sub_ctrl(self, from_top_removal=True)
+        return self._root._remove_ctrl(self)
 
     def BindLifeToObject(
         self,
@@ -219,19 +213,11 @@ class UBaseCtrl(object):
         self._bind_objectref = ref(obj, lambda _: self.Remove(warning=False))
         return self
 
-    def addDestroyListener(self, func):
-        # type: (Callable[[], None]) -> None
-        self._removed_listeners.append(func)
-
-    def OnDestroyed(self):
-        pass
-
     def GetElement(self, path):
         # type: (str | UIPath) -> UBaseCtrl
         if isinstance(path, UIPath):
             path = path.base
         ctrl = UBaseCtrl(self._root, self.base.GetChildByPath("/" + path))
-        self._sub_ctrls.add(ctrl)
         return ctrl
 
     # ====
@@ -254,19 +240,6 @@ class UBaseCtrl(object):
         return hash(self.base.GetPath())
 
     __getitem__ = __div__ = __truediv__
-
-    def _call_destroy(self, top=False):
-        for func in self._removed_listeners:
-            func()
-        # for sub_ctrl in self._sub_ctrls:
-        #     sub_ctrl._call_destroy(top=False)
-        if self._removed:
-            print("[Warning] element._call_destroy removed already!!!")
-        else:
-            if not top:
-                self._root._remove_sub_ctrl(self, from_top_removal=False)
-            self._removed = True
-        self.OnDestroyed()
 
     def _save_t(self, obj):
         self._cache_t = obj
