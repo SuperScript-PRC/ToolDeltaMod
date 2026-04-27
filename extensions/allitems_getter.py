@@ -1,6 +1,7 @@
 # coding=utf-8
-from ..general import ClientInitCallback, ServerInitCallback
+from ..general import ServerInitCallback, ClientInitCallback
 from ..events.basic import CustomC2SEvent, CustomS2CEvent
+from ..events.client import UiInitFinishedEvent
 from ..events.server import DelServerPlayerEvent
 
 allitems = set()  # type: set[str]
@@ -68,10 +69,7 @@ def onServerInited():
 
 
 @ClientInitCallback()
-def onClientInit():
-    # type: () -> None
-    GetAllItemsRequest().send()
-
+def onClientReallyInited():
     @GetAllItemsResponse.Listen()
     def onGetResponse(event):
         # type: (GetAllItemsResponse) -> None
@@ -99,6 +97,10 @@ def onClientInit():
         for item in allitems:
             for tag in getTags(item) or []:
                 allitems_by_tag.setdefault(tag, set()).add(item)
+
+    @UiInitFinishedEvent.Listen()
+    def onStartGame(event):
+        GetAllItemsRequest().send()
 
 
 def GetAllItems():
