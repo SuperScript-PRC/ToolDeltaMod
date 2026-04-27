@@ -38,7 +38,6 @@ class ToolDeltaScreen(ClientListenerService):
         )
         self._activated = False
         self._vars = {}
-        self._load_ctrls = set()  # type: set[UBaseCtrl]
 
     @classmethod
     def convertFrom(
@@ -89,9 +88,7 @@ class ToolDeltaScreen(ClientListenerService):
         # type: (str | UIPath) -> UBaseCtrl
         if isinstance(path, UIPath):
             path = path.base
-        c = UBaseCtrl(self, self.GetBaseUIControl(path))
-        self._add_sub_ctrl(c)
-        return c
+        return UBaseCtrl(self, self.GetBaseUIControl(path))
 
     @classmethod
     def CreateUI(cls, params={}):
@@ -263,23 +260,10 @@ class ToolDeltaScreen(ClientListenerService):
         self._activated = False
         self.disable_listeners()
         self._disable_delayed_listeners()
-        for ctrl in list(self._load_ctrls):
-            ctrl._call_destroy()
-        self._load_ctrls.clear()
 
-    def _add_sub_ctrl(self, ctrl):
-        # type: (UBaseCtrl) -> None
-        self._load_ctrls.add(ctrl)
-
-    def _remove_sub_ctrl(self, ctrl, from_top_removal=False):
-        # type: (UBaseCtrl, bool) -> bool
-        if ctrl not in self._load_ctrls:
-            return False
-        self._load_ctrls.remove(ctrl)
-        if from_top_removal:
-            return self.base.RemoveChildControl(ctrl.base)
-        else:
-            return True
+    def _remove_ctrl(self, ctrl):
+        # type: (UBaseCtrl) -> bool
+        return self.base.RemoveChildControl(ctrl.base)
 
     def _on_create(self):
         self._do_active()
