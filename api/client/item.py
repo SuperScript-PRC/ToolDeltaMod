@@ -11,6 +11,11 @@ def GetItemHoverName(itemName):
     return CF.CreateItem(GetLevelId()).GetItemHoverName(itemName)
 
 
+def GetItemFormattedHoverText(itemName):
+    # type: (str) -> str
+    return CF.CreateItem(GetLevelId()).GetItemFormattedHoverText(itemName)
+
+
 def GetItemTags(item_id, aux_value=0):
     # type: (str, int) -> set[str]
     basic_info = item_tags_pool.get(item_id)
@@ -23,5 +28,6 @@ def GetItemTags(item_id, aux_value=0):
 
 __all__ = [
     "GetItemHoverName",
+    "GetItemFormattedHoverText",
     "GetItemTags",
 ]
