@@ -4,6 +4,7 @@ from mod.server.extraServerApi import (
     GetEngineCompFactory,
     GetMinecraftEnum,
     GetPlayerList,
+    GetLevelId,
 )
 from ...define.item import Item
 
@@ -59,6 +60,17 @@ def GetSelectedSlot(player_id):
     return CF.CreateItem(player_id).GetSelectSlotId()
 
 
+def GetPlayerItem(player_id, pos_type, slot, get_userdata=False):
+    # type: (str, int, int, bool) -> Item | None
+    res = CF.CreateItem(player_id).GetPlayerItem(pos_type, slot, get_userdata)
+    return Item.from_dict(res) if res is not None else None
+
+
+def GetPlayerGameType(player_id):
+    # type: (str) -> int
+    return CF.CreateGame(GetLevelId()).GetPlayerGameType(player_id)
+
+
 def SetInventorySlotItemCount(player_id, slot_id, count):
     # type: (str, int, int) -> bool
     return CF.CreateItem(player_id).SetInvItemNum(slot_id, count)
@@ -79,10 +91,12 @@ def PlayerUseItemToPos(player_id, pos, pos_type, slot=0, facing=1):
     return CF.CreateBlockInfo(player_id).PlayerUseItemToPos(pos, pos_type, slot, facing)
 
 
-def GetPlayerItem(player_id, pos_type, slot, get_userdata=False):
-    # type: (str, int, int, bool) -> Item | None
-    res = CF.CreateItem(player_id).GetPlayerItem(pos_type, slot, get_userdata)
-    return Item.from_dict(res) if res is not None else None
+def PlayerDestroyBlock(player_id, pos, particle, send_inv_update=True):
+    # type: (str, tuple[int, int, int], bool, bool) -> bool
+    # 网易对此方法拼写错误
+    return CF.CreateBlockInfo(player_id).PlayerDestoryBlock(
+        pos, particle, send_inv_update
+    )
 
 
 __all__ = [
@@ -93,9 +107,11 @@ __all__ = [
     "GetSelectedSlot",
     "GetPlayersInDim",
     "GetPlayerItem",
+    "GetPlayerGameType",
     "IsOP",
     "IsSneaking",
     "PlayerUseItemToPos",
+    "PlayerDestroyBlock",
     "SetInventorySlotItemCount",
     "SpawnItemToPlayerCarried",
 ]
