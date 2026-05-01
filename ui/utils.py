@@ -2,9 +2,9 @@
 import mod.client.extraClientApi as clientApi
 
 if 0:
-    from typing import Callable, TypeVar
+    import typing
 
-    FuncT = TypeVar("FuncT", bound=Callable)
+    FuncT = typing.TypeVar("FuncT", bound=typing.Callable)
 
 ViewBinder = clientApi.GetViewBinderCls()
 
@@ -42,12 +42,12 @@ class UIPath(object):
 class Binder(ViewBinder):
     @classmethod
     def binding(cls, bind_flag, binding_name):
-        # type: (int, str) -> Callable[[FuncT], FuncT]
+        # type: (int, str) -> typing.Callable[[FuncT], FuncT]
         return ViewBinder.binding(bind_flag, binding_name)  # pyright: ignore[reportReturnType]
 
     @classmethod
     def binding_collection(cls, bind_flag, collection_name, binding_name):
-        # type: (int, str, str) -> Callable[[FuncT], FuncT]
+        # type: (int, str, str) -> typing.Callable[[FuncT], FuncT]
         return ViewBinder.binding_collection(bind_flag, collection_name, binding_name)  # pyright: ignore[reportReturnType]
 
 

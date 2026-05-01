@@ -1,14 +1,14 @@
 # coding=utf-8
 if 0:
-    from typing import Literal
+    import typing
 
 
 class UICtrlPosData:
     def __init__(
         self,
-        follow_type="none", # type: Literal["none", "parent", "maxChildren", "maxSibling", "children", "x", "y"]
-        relative_value=0.0, # type: float
-        absolute_value=0.0, # type: float
+        follow_type="none",  # type: typing.Literal["none", "parent", "maxChildren", "maxSibling", "children", "x", "y"]
+        relative_value=0.0,  # type: float
+        absolute_value=0.0,  # type: float
     ):
         self.follow_type = follow_type
         self.relative_value = relative_value

@@ -8,19 +8,19 @@ from .basic import ServerEvent, CustomC2SEvent
 
 # TYPE_CHECKING
 if 0:
-    from typing import Any, Callable, TypeVar
+    import typing
 
-    EventT = TypeVar("EventT", bound="ServerEvent")
+    EventT = typing.TypeVar("EventT", bound="ServerEvent")
 # TYPE_CHECKING END
 
 
-event_listeners = {}  # type: dict[int, dict[type[ServerEvent], list[Callable[[Any], None]]]]
-system_event_listeners = {}  # type: dict[int, dict[type[ServerEvent], Callable[[dict], None]]]
+event_listeners = {}  # type: dict[int, dict[type[ServerEvent], list[typing.Callable[[typing.Any], None]]]]
+system_event_listeners = {}  # type: dict[int, dict[type[ServerEvent], typing.Callable[[dict], None]]]
 system_inited = False
 
 
 def AddEventListener(event, listener, priority=0, static=False):
-    # type: (type[EventT], Callable[[EventT], None], int, bool) -> None
+    # type: (type[EventT], typing.Callable[[EventT], None], int, bool) -> None
     """
     监听服务端事件。
 
@@ -37,7 +37,7 @@ def AddEventListener(event, listener, priority=0, static=False):
 
 
 def RemoveEventListener(event, listener, priority=0):
-    # type: (type[EventT], Callable[[EventT], None], int) -> None
+    # type: (type[EventT], typing.Callable[[EventT], None], int) -> None
     """
     取消监听服务端事件。
 
@@ -49,7 +49,7 @@ def RemoveEventListener(event, listener, priority=0):
 
 
 def ListenEvent(event, priority=0, static=False):
-    # type: (type[EventT], int, bool) -> Callable[[Callable[[EventT], None]], Callable[[EventT], None]]
+    # type: (type[EventT], int, bool) -> typing.Callable[[typing.Callable[[EventT], None]], typing.Callable[[EventT], None]]
     """
     监听服务端事件, 作为装饰器使用。
 
@@ -58,7 +58,7 @@ def ListenEvent(event, priority=0, static=False):
     """
 
     def wrapper(func):
-        # type: (Callable[[EventT], None]) -> Callable[[EventT], None]
+        # type: (typing.Callable[[EventT], None]) -> typing.Callable[[EventT], None]
         AddEventListener(event, func, priority, static)
         return func
 
@@ -66,7 +66,7 @@ def ListenEvent(event, priority=0, static=False):
 
 
 def dynListen(event, listener, priority=0):
-    # type: (type[EventT], Callable[[EventT], None], int) -> None
+    # type: (type[EventT], typing.Callable[[EventT], None], int) -> None
     global system_inited
     if priority not in event_listeners or event not in event_listeners[priority]:
 
@@ -89,7 +89,7 @@ def dynListen(event, listener, priority=0):
 
 
 def dynUnListen(event, listener, priority=0):
-    # type: (type[EventT], Callable[[EventT], None], int) -> None
+    # type: (type[EventT], typing.Callable[[EventT], None], int) -> None
     global system_inited
     if priority not in event_listeners or event not in event_listeners[priority]:
         print("[Warning] Remove listener not exists: {}".format(listener))
@@ -106,7 +106,7 @@ def dynUnListen(event, listener, priority=0):
 
 
 def addSysEventListener(event, listener, priority=0):
-    # type: (type[EventT], Callable[[dict], None], int) -> None
+    # type: (type[EventT], typing.Callable[[dict], None], int) -> None
     s = GetServer()
     setattr(s, listener.__name__, listener)
     if issubclass(event, CustomC2SEvent):
@@ -126,7 +126,7 @@ def addSysEventListener(event, listener, priority=0):
 
 
 def remSysEventListener(event, listener, priority=0):
-    # type: (type[EventT], Callable[[dict], None], int) -> None
+    # type: (type[EventT], typing.Callable[[dict], None], int) -> None
     s = GetServer()
     if hasattr(s, listener.__name__):
         delattr(s, listener.__name__)

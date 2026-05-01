@@ -5,21 +5,21 @@ from .internal import SetClient, SetServer
 
 # TYPE_CHECKING
 if 0:
-    from typing import Callable, TypeVar
+    import typing
     from .mod_server import ToolDeltaModServer as Server
     from .mod_client import ToolDeltaModClient as Client
 
-    FuncT = TypeVar("FuncT", bound="Callable[[], None]")
+    FuncT = typing.TypeVar("FuncT", bound="typing.Callable[[], None]")
 # TYPE_CHECKING END
 
-extra_server_init_register_funcs = {}  # type: dict[int, set[Callable[[], None]]]
-extra_client_init_register_funcs = {}  # type: dict[int, set[Callable[[], None]]]
-extra_server_uninit_register_funcs = {}  # type: dict[int, set[Callable[[], None]]]
-extra_client_uninit_register_funcs = {}  # type: dict[int, set[Callable[[], None]]]
+extra_server_init_register_funcs = {}  # type: dict[int, set[typing.Callable[[], None]]]
+extra_client_init_register_funcs = {}  # type: dict[int, set[typing.Callable[[], None]]]
+extra_server_uninit_register_funcs = {}  # type: dict[int, set[typing.Callable[[], None]]]
+extra_client_uninit_register_funcs = {}  # type: dict[int, set[typing.Callable[[], None]]]
 
 
 def run_by_priority(funcs):
-    # type: (dict[int, set[Callable[[], None]]]) -> None
+    # type: (dict[int, set[typing.Callable[[], None]]]) -> None
     for _, fns in sorted(funcs.items(), key=lambda x: x[0], reverse=True):
         for func in fns:
             func()

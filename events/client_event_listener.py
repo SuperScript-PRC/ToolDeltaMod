@@ -7,21 +7,22 @@ from ..internal import GetModName, GetModServerEngineName
 
 # TYPE_CHECKING
 if 0:
-    from typing import Any, TYPE_CHECKING, Callable, TypeVar
-    EventT = TypeVar("EventT", bound="ClientEvent")
-    T = TypeVar("T")
+    import typing
+
+    EventT = typing.TypeVar("EventT", bound="ClientEvent")
+    T = typing.TypeVar("T")
 # TYPE_CHECKING END
 
 from ..internal import GetClient
 from .basic import ClientEvent, CustomS2CEvent
 
-event_listeners = {}  # type: dict[int, dict[type[ClientEvent], list[tuple[int, Callable[[Any], None]]]]]
-system_event_listeners = {} # type: dict[int, dict[type[ClientEvent], Callable[[dict], None]]]
+event_listeners = {}  # type: dict[int, dict[type[ClientEvent], list[tuple[int, typing.Callable[[typing.Any], None]]]]]
+system_event_listeners = {}  # type: dict[int, dict[type[ClientEvent], typing.Callable[[dict], None]]]
 system_inited = False
 
 
 def AddEventListener(event, listener, priority=0, inner_priority=0, static=False):
-    # type: (type[EventT], Callable[[EventT], None], int, int, bool) -> None
+    # type: (type[EventT], typing.Callable[[EventT], None], int, int, bool) -> None
     """
     监听客户端事件。
 
@@ -34,10 +35,10 @@ def AddEventListener(event, listener, priority=0, inner_priority=0, static=False
     if system_inited and static:
         return
     dynListen(event, listener, priority, inner_priority)
-    
+
 
 def RemoveEventListener(event, listener, priority=0):
-    # type: (type[EventT], Callable[[EventT], None], int) -> None
+    # type: (type[EventT], typing.Callable[[EventT], None], int) -> None
     """
     取消监听服务端事件。
 
@@ -47,31 +48,38 @@ def RemoveEventListener(event, listener, priority=0):
     """
     dynUnListen(event, listener, priority)
 
+
 def ListenEvent(event, priority=0, inner_priority=0, static=False):
-    # type: (type[EventT], int, int, bool) -> Callable[[Callable[[EventT], None]], Callable[[EventT], None]]
+    # type: (type[EventT], int, int, bool) -> typing.Callable[[typing.Callable[[EventT], None]], typing.Callable[[EventT], None]]
     """
     监听客户端事件, 作为装饰器使用。
 
     Args:
         event (type[Event]): 事件类
     """
+
     def wrapper(func):
-        # type: (Callable[[EventT], None]) -> Callable[[EventT], None]
+        # type: (typing.Callable[[EventT], None]) -> typing.Callable[[EventT], None]
         AddEventListener(event, func, priority, inner_priority, static)
         return func
 
     return wrapper
 
+
 def dynListen(event, listener, priority=0, inner_priority=0):
-    # type: (type[EventT], Callable[[EventT], None], int, int) -> None
+    # type: (type[EventT], typing.Callable[[EventT], None], int, int) -> None
     global system_inited
     if priority not in event_listeners or event not in event_listeners[priority]:
+
         def event_bus_handler(args):
             # type: (dict) -> None
             event_ins = event.unmarshal(args)
             for _, cb in event_listeners[priority][event]:
                 cb(event_ins)
-        event_bus_handler.__name__ = "tdsysevent_handler_" + event.__name__ + str(priority)
+
+        event_bus_handler.__name__ = (
+            "tdsysevent_handler_" + event.__name__ + str(priority)
+        )
         system_event_listeners.setdefault(priority, {})[event] = event_bus_handler
         if system_inited:
             addSysEventListener(event, event_bus_handler, priority)
@@ -80,9 +88,10 @@ def dynListen(event, listener, priority=0, inner_priority=0):
     if listener_tupl not in listeners:
         listeners.append(listener_tupl)
     event_listeners[priority][event].sort(key=lambda x: x[0], reverse=True)
-        
+
+
 def dynUnListen(event, listener, priority=0, inner_priority=0):
-    # type: (type[EventT], Callable[[EventT], None], int, int) -> None
+    # type: (type[EventT], typing.Callable[[EventT], None], int, int) -> None
     global system_inited
     if priority not in event_listeners or event not in event_listeners[priority]:
         print("[Warning] Remove listener not exists: {}".format(listener))
@@ -97,8 +106,9 @@ def dynUnListen(event, listener, priority=0, inner_priority=0):
         if not syslevel_listeners:
             del system_event_listeners[priority]
 
+
 def addSysEventListener(event, listener, priority=0):
-    # type: (type[EventT], Callable[[dict], None], int) -> None
+    # type: (type[EventT], typing.Callable[[dict], None], int) -> None
     s = GetClient()
     setattr(s, listener.__name__, listener)
     if issubclass(event, CustomS2CEvent):
@@ -110,13 +120,15 @@ def addSysEventListener(event, listener, priority=0):
     s.ListenForEvent(
         namespace,
         system_name,
-        event.name, s,
-        listener, # pyright: ignore[reportArgumentType]
-        priority
+        event.name,
+        s,
+        listener,  # pyright: ignore[reportArgumentType]
+        priority,
     )
 
+
 def remSysEventListener(event, listener, priority=0):
-    # type: (type[EventT], Callable[[dict], None], int) -> None
+    # type: (type[EventT], typing.Callable[[dict], None], int) -> None
     s = GetClient()
     if hasattr(s, listener.__name__):
         delattr(s, listener.__name__)
@@ -129,10 +141,12 @@ def remSysEventListener(event, listener, priority=0):
     s.UnListenForEvent(
         namespace,
         system_name,
-        event.name, s,
-        listener, # pyright: ignore[reportArgumentType]
-        priority
+        event.name,
+        s,
+        listener,  # pyright: ignore[reportArgumentType]
+        priority,
     )
+
 
 @ClientInitCallback(-10000)
 def onClientListen():
@@ -143,10 +157,10 @@ def onClientListen():
             addSysEventListener(event, listener, priority)
     system_inited = True
 
+
 @ClientUninitCallback(-10000)
 def onClientUnlisten():
     # type: () -> None
     for priority, syslevel_cbs in system_event_listeners.items():
         for event, listener in syslevel_cbs.items():
             remSysEventListener(event, listener, priority)
-
