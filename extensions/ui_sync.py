@@ -14,7 +14,7 @@ from ..general import ServerInitCallback, ClientInitCallback
 from ..api.common import AsTimerFunc
 
 if 0:
-    from typing import Callable
+    import typing
 
 # 主要用于 UI 信息的同步。
 # 比如:
@@ -65,7 +65,7 @@ class S2CSync(object):
         self._changed = True
 
     def SetUpdateCallback(self, func):
-        # type: (Callable[[], None]) -> None
+        # type: (typing.Callable[[], None]) -> None
         self.update_cb = func
 
     def GenerateSpecName(self):

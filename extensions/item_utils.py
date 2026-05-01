@@ -2,12 +2,12 @@
 from ..define import Item
 
 if 0:
-    from typing import Callable
+    import typing
 
 
 def SortItems(items, key=lambda i: i.id):
-    # type: (list[Item], Callable[[Item], str | int]) -> list[Item]
-    res = [] # type: list[Item]
+    # type: (list[Item], typing.Callable[[Item], str | int]) -> list[Item]
+    res = []  # type: list[Item]
     for item in (i.copy() for i in items):
         for exists_item in res:
             if exists_item.StackFull():
@@ -25,4 +25,3 @@ def SortItems(items, key=lambda i: i.id):
         if item.count > 0:
             res.append(item)
     return sorted(res, key=key)
-

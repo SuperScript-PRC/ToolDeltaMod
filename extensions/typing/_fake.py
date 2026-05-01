@@ -1,5 +1,8 @@
 if 0:
-    from typing import Generic, TypeVar
+    import typing
+
+    Generic = typing.Generic
+    TypeVar = typing.TypeVar
 
 
 class FakeGenericMeta(type):

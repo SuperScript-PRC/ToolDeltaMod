@@ -7,7 +7,7 @@ from .utils import UIPath
 
 # TYPE_CHECKING
 if 0:
-    from typing import Callable, Any, Literal
+    import typing
     from .general_screen import ToolDeltaScreen
     from ._ui_typing import *
 # TYPE_CHECKING END
@@ -21,7 +21,7 @@ class UBaseCtrl(object):
         self.base = base
         self._root = root
         self._parent_cached = None
-        self._cache_t = None  # type: Any | None
+        self._cache_t = None  # type: typing.Any | None
         self._vars = {}
         self._removed = False
         self._bind_objectref = None  # type: ref | None
@@ -130,12 +130,12 @@ class UBaseCtrl(object):
         return self.base.GetGlobalPosition()
 
     def GetFullPos(self, axis):
-        # type: (Literal["x", "y"]) -> UICtrlPosData
+        # type: (typing.Literal["x", "y"]) -> UICtrlPosData
         return UICtrlPosData.from_dict(self.base.GetFullPosition(axis))
 
     def SetFullPos(
         self,
-        axis,  # type: Literal["x", "y"]
+        axis,  # type: typing.Literal["x", "y"]
         posdata,  # type: UICtrlPosData
     ):
         return self.base.SetFullPosition(axis, posdata.to_dict())
@@ -149,11 +149,11 @@ class UBaseCtrl(object):
         return self.base.SetPropertyBag(params)
 
     def SetAnchorFrom(self, anchor):
-        # type: (Literal["top_left", "top_middle", "top_right", "left_middle", "center", "right_middle", "bottom_left", "bottom_middle", "bottom_right"]) -> bool
+        # type: (typing.Literal["top_left", "top_middle", "top_right", "left_middle", "center", "right_middle", "bottom_left", "bottom_middle", "bottom_right"]) -> bool
         return self.base.SetAnchorFrom(anchor)
 
     def SetAnchorTo(self, anchor):
-        # type: (Literal["top_left", "top_middle", "top_right", "left_middle", "center", "right_middle", "bottom_left", "bottom_middle", "bottom_right"]) -> bool
+        # type: (typing.Literal["top_left", "top_middle", "top_right", "left_middle", "center", "right_middle", "bottom_left", "bottom_middle", "bottom_right"]) -> bool
         return self.base.SetAnchorTo(anchor)
 
     def SetPos(
@@ -180,7 +180,7 @@ class UBaseCtrl(object):
 
     def SetFullSize(
         self,
-        axis,  # type: Literal["x", "y"]
+        axis,  # type: typing.Literal["x", "y"]
         params,  # type: UICtrlPosData
     ):
         return self.base.SetFullSize(axis, params.to_dict())
@@ -304,7 +304,7 @@ class UImage(UBaseCtrl):
         self.base.SetSpriteColor(rgb)
 
     def SetSpriteClipRatio(self, clipDirection, clipRatio):
-        # type: (Literal["fromLeftToRight", "fromRightToLeft", "fromTopToBottom", "fromBottomToTop", "fromOutsideToInside"], float) -> None
+        # type: (typing.Literal["fromLeftToRight", "fromRightToLeft", "fromTopToBottom", "fromBottomToTop", "fromOutsideToInside"], float) -> None
         self.base.SetClipDirection(clipDirection)
         self.base.SetSpriteClipRatio(clipRatio)
 
@@ -324,7 +324,7 @@ class UButton(UBaseCtrl):
 
     def SetCallback(
         self,
-        callback,  # type: Callable[[Any], Any]
+        callback,  # type: typing.Callable[[typing.Any], typing.Any]
     ):
         self.base.AddTouchEventParams({"isSwallow": True})
         self.base.SetButtonTouchUpCallback(callback)  # pyright: ignore[reportArgumentType]
@@ -332,7 +332,7 @@ class UButton(UBaseCtrl):
 
     def SetOnRollOverCallback(
         self,
-        callback,  # type: Callable[[dict], None]
+        callback,  # type: typing.Callable[[dict], None]
     ):
         self.base.AddHoverEventParams()
         self.base.SetButtonHoverInCallback(callback)  # pyright: ignore[reportArgumentType]
@@ -340,7 +340,7 @@ class UButton(UBaseCtrl):
 
     def SetOnRollOutCallback(
         self,
-        callback,  # type: Callable[[dict], None]
+        callback,  # type: typing.Callable[[dict], None]
     ):
         self.base.AddHoverEventParams()
         self.base.SetButtonHoverOutCallback(callback)  # pyright: ignore[reportArgumentType]
@@ -366,7 +366,7 @@ class UGrid(UBaseCtrl):
         if base is None:
             raise TypeError("expected GridUIControl, got " + str(type(base)))
         self.path = self.base.GetPath()
-        self.later_exec_cbs = []  # type: list[Callable[[], None]]
+        self.later_exec_cbs = []  # type: list[typing.Callable[[], None]]
         self.base = base
 
     def GetGridDimension(self):
@@ -384,7 +384,7 @@ class UGrid(UBaseCtrl):
         self.base.SetGridDimension(xy)
 
     def SetDimensionAndCall(self, xy, cb):
-        # type: (tuple[int, int], Callable[[], None]) -> None
+        # type: (tuple[int, int], typing.Callable[[], None]) -> None
         old_xy = self.GetGridDimension()
         if xy == old_xy:
             ExecLater(0, cb)
@@ -393,7 +393,7 @@ class UGrid(UBaseCtrl):
             self.ExecuteAfterUpdate(cb)
 
     def ExecuteAfterUpdate(self, cb):
-        # type: (Callable[[], None]) -> None
+        # type: (typing.Callable[[], None]) -> None
         self.later_exec_cbs.append(cb)
         grid_comp_size_changed_cbs[self.path] = self.onGridSizeChanged
 
@@ -466,7 +466,7 @@ class UNeteasePaperDoll(UBaseCtrl):
         init_rot_y=0,  # type: float
         init_rot_z=0,  # type: float
         molang_dict={},  # type: dict
-        rotation_axis=(0, 0, 0),  # type: tuple[Literal[0, 1], Literal[0, 1], Literal[0, 1]]
+        rotation_axis=(0, 0, 0),  # type: tuple[typing.Literal[0, 1], typing.Literal[0, 1], typing.Literal[0, 1]]
     ):
         params = {
             "scale": scale,
@@ -491,7 +491,7 @@ class UNeteasePaperDoll(UBaseCtrl):
         init_rot_x=0,  # type: float
         init_rot_z=0,  # type: float
         molang_dict=None,  # type: dict | None
-        rotation_axis=(1, 0, 0),  # type: tuple[Literal[0, 1], Literal[0, 1], Literal[0, 1]]
+        rotation_axis=(1, 0, 0),  # type: tuple[typing.Literal[0, 1], typing.Literal[0, 1], typing.Literal[0, 1]]
     ):
         return self.base.RenderBlockGeometryModel({
             "block_geometry_model_name": block_geometry_model_name,
@@ -552,7 +552,7 @@ def _get_gui():
         return gui_missing()
 
 
-grid_comp_size_changed_cbs = dict()  # type: dict[str, Callable[[], None]]
+grid_comp_size_changed_cbs = dict()  # type: dict[str, typing.Callable[[], None]]
 
 
 @GridComponentSizeChangedClientEvent.Listen()
@@ -582,7 +582,7 @@ CONVERT_MAP = {
     UGrid: lambda x: x.asGrid(),
     UNeteasePaperDoll: lambda x: x.asNeteasePaperDoll(),
     USlider: lambda x: x.asSlider(),
-}  # type: dict[type[UBaseCtrl], Callable[[BaseUIControl], BaseUIControl | None]]
+}  # type: dict[type[UBaseCtrl], typing.Callable[[BaseUIControl], BaseUIControl | None]]
 
 __all__ = [
     "UBaseCtrl",
