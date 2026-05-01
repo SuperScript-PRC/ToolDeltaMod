@@ -1,5 +1,4 @@
 # coding=utf-8
-from mod.common.component.blockPaletteComp import BlockPaletteComponent
 from ..api.client import (
     CombineBlockPaletteToGeometry,
     NewSingleBlockPalette,
@@ -12,6 +11,9 @@ from ..api.client import (
 )
 from ..api.common import ExecLater
 
+if 0:
+    import typing
+
 
 class GeometryModel(object):
     def __init__(self, entity_id):
@@ -22,7 +24,7 @@ class GeometryModel(object):
         self._last_block_aux = None
 
     def SetBlockPaletteModel(self, block_palette, geo_id, scale=None):
-        # type: (BlockPaletteComponent, str, tuple[float, float, float] | None) -> bool
+        # type: (typing.Any, str, tuple[float, float, float] | None) -> bool
         if self.geo_id is not None:
             res = self.RemoveGeometry()
             if not res:
@@ -114,7 +116,7 @@ def CreateTempBlockGeometryModelEntity(
     entity_name="skybluetech:model_entity",
     delay=8,
 ):
-    # type: (tuple[float, float, float], BlockPaletteComponent, str, str, int) -> None
+    # type: (tuple[float, float, float], typing.Any, str, str, int) -> None
     x, y, z = pos
     model = CreateBlankModel((x + 0.5, y, z + 0.5), entity_name)
     model.SetBlockPaletteModel(block_palette, temp_id)

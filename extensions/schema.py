@@ -2,7 +2,7 @@
 if 0:
     import typing
 
-    BASE_TYPE = type[str | int | float | bool] | None
+    BASE_TYPE = typing.Type[str | int | float | bool] | None
     _KEY_TYPE = typing.Union[BASE_TYPE, "TupleSchema", "FixedTupleSchema"]
     _VALUE_TYPE = (
         BASE_TYPE
@@ -14,9 +14,9 @@ if 0:
             "FixedTupleSchema",
         ]
     )
-    KEY_TYPE = _KEY_TYPE | tuple[_KEY_TYPE, ...]
-    VALUE_TYPE = _VALUE_TYPE | tuple[_VALUE_TYPE, ...]
-    SCHEMA_TYPE = _VALUE_TYPE | tuple["SCHEMA_TYPE", ...]
+    KEY_TYPE = _KEY_TYPE | typing.Tuple[_KEY_TYPE, ...]
+    VALUE_TYPE = _VALUE_TYPE | typing.Tuple[_VALUE_TYPE, ...]
+    SCHEMA_TYPE = _VALUE_TYPE | typing.Tuple["SCHEMA_TYPE", ...]
 
 
 def check_generic(
