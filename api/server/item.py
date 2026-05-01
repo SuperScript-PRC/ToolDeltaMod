@@ -4,8 +4,6 @@ from mod.server.extraServerApi import GetEngineCompFactory, GetLevelId
 from ...define import itemBasicInfoPool, BasicItemInfo, Item
 from ..common.cacher import MethodCacher
 
-if 0:
-    from typing import Callable
 
 CF = GetEngineCompFactory()
 

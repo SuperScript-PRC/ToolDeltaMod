@@ -4,19 +4,19 @@ from .basic import ClientEvent, ServerEvent
 
 
 if 0:
-    from typing import Callable, TypeVar
+    import typing
 
-    CEventT = TypeVar("CEventT", bound=ClientEvent)
-    SEventT = TypeVar("SEventT", bound=ServerEvent)
-    CallT = TypeVar("CallT", bound=Callable)
+    CEventT = typing.TypeVar("CEventT", bound=ClientEvent)
+    SEventT = typing.TypeVar("SEventT", bound=ServerEvent)
+    CallT = typing.TypeVar("CallT", bound=typing.Callable)
 
 _ATTR_EVENT_LISTENER = "_tdbind_event_listen"
 
 
 class ClientListenerService:
     def __init__(self):
-        self._bind_listen_events = []  # type: list[tuple[type[ClientEvent], Callable[[ClientEvent], None], int]]
-        self._bind_delayed_listen_events = {}  # type: dict[type[ClientEvent], list[Callable[[ClientEvent], None]]]
+        self._bind_listen_events = []  # type: list[tuple[type[ClientEvent], typing.Callable[[ClientEvent], None], int]]
+        self._bind_delayed_listen_events = {}  # type: dict[type[ClientEvent], list[typing.Callable[[ClientEvent], None]]]
         self._delayed_events_deque = deque()  # type: deque[ClientEvent]
         self._listen_service_enabled = False
         self._process_bind_listeners()
@@ -96,7 +96,7 @@ class ClientListenerService:
 
 class ServerListenerService:
     def __init__(self):
-        self._bind_listen_events = []  # type: list[tuple[type[ServerEvent], Callable[[ServerEvent], None], int]]
+        self._bind_listen_events = []  # type: list[tuple[type[ServerEvent], typing.Callable[[ServerEvent], None], int]]
         self._process_bind_listeners()
 
     def enable_listeners(self):

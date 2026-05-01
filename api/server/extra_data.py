@@ -2,9 +2,9 @@
 from mod.server.extraServerApi import GetEngineCompFactory
 
 if 0:
-    from typing import TypeVar
+    import typing
 
-    T = TypeVar("T")
+    T = typing.TypeVar("T")
 
 CF = GetEngineCompFactory()
 

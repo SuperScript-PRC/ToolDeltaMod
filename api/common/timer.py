@@ -7,7 +7,6 @@ from ...general import ClientUninitCallback, ServerUninitCallback
 # TYPE_CHECKING
 if 0:
     import typing
-    from typing import Callable, Any
 
     PT = typing.ParamSpec("PT")
 # TYPE_CHECKING END
@@ -17,7 +16,7 @@ sTimerPool = set()  # type: set
 
 
 def ExecLater(t, func, *args, **kwargs):
-    # type: (float, Callable, Any, Any) -> None
+    # type: (float, typing.Callable, typing.Any, typing.Any) -> None
     "执行延迟方法"
     if inServerEnv():
         from mod.server.extraServerApi import GetEngineCompFactory, GetLevelId
@@ -33,7 +32,7 @@ def ExecLater(t, func, *args, **kwargs):
 
 
 def Delay(t):
-    # type: (float) -> Callable[[Callable[PT, Any]], Callable[PT, Any]]
+    # type: (float) -> typing.Callable[[typing.Callable[PT, typing.Any]], typing.Callable[PT, typing.Any]]
     """
     将方法固定作为延时方法
 
@@ -41,7 +40,7 @@ def Delay(t):
     """
 
     def wrapper(func):
-        # type: (Callable[PT, Any]) -> Callable[PT, Any]
+        # type: (typing.Callable[PT, typing.Any]) -> typing.Callable[PT, typing.Any]
         def inner(*args, **kwargs):
             ExecLater(t, func, *args, **kwargs)
 
@@ -52,13 +51,13 @@ def Delay(t):
 
 
 def Repeat(t):
-    # type: (float) -> Callable[[Callable[PT, Any]], Callable[PT, Any]]
+    # type: (float) -> typing.Callable[[typing.Callable[PT, typing.Any]], typing.Callable[PT, typing.Any]]
     """
     将方法固定作为定时执行方法
     """
 
     def wrapper(func):
-        # type: (Callable[PT, Any]) -> Callable[PT, Any]
+        # type: (typing.Callable[PT, typing.Any]) -> typing.Callable[PT, typing.Any]
         def inner(*args, **kwargs):
             if inClientEnv():
                 from mod.client.extraClientApi import GetEngineCompFactory, GetLevelId
