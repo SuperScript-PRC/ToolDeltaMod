@@ -99,16 +99,6 @@ class UBaseCtrl(object):
         "未开放接口"
         return self.base.FullPath()  # type: ignore
 
-    @classmethod
-    def convertFrom(
-        cls,
-        base_ui_control,  # type: BaseUIControl
-    ):
-        "将原版 BaseUIControl 转换为 UBaseCtrl"
-        from .general_screen import ToolDeltaScreen
-
-        return cls(ToolDeltaScreen.convertFrom(base_ui_control.mNode), base_ui_control)
-
     def GetVisible(self):
         # type: () -> bool
         return self.base.GetVisible()
