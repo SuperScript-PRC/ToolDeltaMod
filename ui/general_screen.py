@@ -39,31 +39,6 @@ class ToolDeltaScreen(ClientListenerService):
         self._activated = False
         self._vars = {}
 
-    @classmethod
-    def convertFrom(
-        cls,
-        screen_node,  # type: _ScreenNode
-    ):
-        "将原版 ScreenNode 转换为 ToolDeltaScreen"
-        instance = cls(screen_node.name, screen_node)
-
-        # not safe
-        instance._do_active()
-
-        # wrap Destroy
-        _orig_on_destroy = getattr(screen_node.Destroy, "_origin_on_destroy", None)
-        if _orig_on_destroy is None:
-            _orig_on_destroy = screen_node.Destroy
-
-        def _wrap_on_destroy():
-            instance._on_destroy()
-            _orig_on_destroy()
-
-        screen_node.Destroy = _wrap_on_destroy
-        _wrap_on_destroy._origin_on_destroy = screen_node.Destroy
-
-        return instance
-
     def AddElement(self, ctrl_def_name, ctrl_name, force_update=True, _parent=None):
         # type: (str, str, bool, UBaseCtrl | None) -> UBaseCtrl
         return UBaseCtrl(
@@ -242,7 +217,7 @@ class ToolDeltaScreen(ClientListenerService):
                 )
         return attrs
 
-    def _do_active(self):
+    def _do_active(self, from_create=False):
         from .pool import _addActiveToolDeltaScreen
 
         if self._activated:
@@ -251,7 +226,7 @@ class ToolDeltaScreen(ClientListenerService):
         self._activated = True
         self.enable_listeners()
 
-    def _do_deactive(self):
+    def _do_deactive(self, from_destroy=False):
         from .pool import _removeActiveToolDeltaScreen
 
         if not self._activated:
@@ -266,17 +241,19 @@ class ToolDeltaScreen(ClientListenerService):
         return self.base.RemoveChildControl(ctrl.base)
 
     def _on_create(self):
-        self._do_active()
+        self._do_active(from_create=True)
         self.OnCreate()
 
     def _on_destroy(self):
-        self._do_deactive()
+        self._do_deactive(from_destroy=True)
         self.OnDestroy()
 
     def _on_active(self):
+        self._do_active(from_create=False)
         self.OnActive()
 
     def _on_deactive(self):
+        self._do_deactive(from_destroy=False)
         self.OnDeactive()
 
     def _on_ticking(self):

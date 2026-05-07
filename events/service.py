@@ -94,7 +94,7 @@ class ClientListenerService:
         self._disable_delayed_listeners()
 
 
-class ServerListenerService:
+class ServerListenerService(object):
     def __init__(self):
         self._bind_listen_events = []  # type: list[tuple[type[ServerEvent], typing.Callable[[ServerEvent], None], int]]
         self._process_bind_listeners()

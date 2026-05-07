@@ -3,59 +3,6 @@ from ...define.item import Item
 from ..basic import ServerEvent
 
 
-class AddServerPlayerEvent(ServerEvent):
-    name = "AddServerPlayerEvent"
-
-    def __init__(
-        self,
-        id,  # type: str
-        isTransfer,  # type: bool
-        isReconnect,  # type: bool
-        isPeUser,  # type: bool
-        transferParam,  # type: str
-        uid,  # type: int
-        proxyId,  # type: int
-    ):
-        self.id = id
-        """ 玩家id """
-        self.isTransfer = isTransfer
-        """ 是否是切服时进入服务器，仅用于Apollo。如果是True，则表示切服时加入服务器，若是False，则表示登录进入网络游戏 """
-        self.isReconnect = isReconnect
-        """ 是否是断线重连，仅用于Apollo。如果是True，则表示本次登录是断线重连，若是False，则表示本次是正常登录或者转服 """
-        self.isPeUser = isPeUser
-        """ 是否从手机端登录，仅用于Apollo。如果是True，则表示本次登录是从手机端登录，若是False，则表示本次登录是从PC端登录 """
-        self.transferParam = transferParam
-        """ 切服传入参数，仅用于Apollo。调用【TransferToOtherServer】或【TransferToOtherServerById】传入的切服参数 """
-        self.uid = uid
-        """ 仅用于Apollo，玩家的netease uid，玩家的唯一标识 """
-        self.proxyId = proxyId
-        """ 仅用于Apollo，当前客户端连接的proxy服务器id """
-
-    @classmethod
-    def unmarshal(cls, data):
-        return cls(
-            id=data["id"],
-            isTransfer=data.get("isTransfer", False),
-            isReconnect=data.get("isReconnect", False),
-            isPeUser=data.get("isPeUser", False),
-            transferParam=data.get("transferParam", ""),
-            uid=data.get("uid", 0),
-            proxyId=data.get("proxyId", 0),
-        )
-
-    def marshal(self):
-        # type: () -> dict
-        return {
-            "id": self.id,
-            "isTransfer": self.isTransfer,
-            "isReconnect": self.isReconnect,
-            "isPeUser": self.isPeUser,
-            "transferParam": self.transferParam,
-            "uid": self.uid,
-            "proxyId": self.proxyId,
-        }
-
-
 class PlayerAttackEntityEvent(ServerEvent):
     name = "PlayerAttackEntityEvent"
 
