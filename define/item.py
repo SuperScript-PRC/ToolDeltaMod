@@ -216,7 +216,7 @@ class BasicItemInfo(object):
     customItemType = ""  # type: str
     """ 自定义物品类型 """
     tags = set()  # type: set[str]
-    """ 物品的tags列表，如['minecraft:is_food'] """
+    """ 物品的tags集合，如{'minecraft:is_food'}  """
     customTips = ""  # type: str
     """ 自定义物品/方块tips """
     itemTierLevel = 0  # type: int
