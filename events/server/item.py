@@ -439,6 +439,21 @@ class ActorAcquiredItemServerEvent(ServerEvent):
             "acquireMethod": self.acquireMethod,
         }
 
+    @classmethod
+    def WithUserData(cls):
+        from mod.server.extraServerApi import GetEngineCompFactory, GetLevelId
+
+        GetEngineCompFactory().CreateItem(GetLevelId()).GetUserDataInEvent(cls.name)
+        return cls
+
+    @classmethod
+    def ListenWithUserData(cls, priority=0):
+        # print("[TDEvent] Listen with user data: " + cls.name)
+        from mod.server.extraServerApi import GetEngineCompFactory, GetLevelId
+
+        GetEngineCompFactory().CreateItem(GetLevelId()).GetUserDataInEvent(cls.name)
+        return cls.Listen(priority)
+
 
 class OnCarriedNewItemChangedServerEvent(ServerEvent):
     name = "OnCarriedNewItemChangedServerEvent"
@@ -643,7 +658,7 @@ class UIContainerItemChangedServerEvent(ServerEvent):
             playerId=data["playerId"],
             slot=data["slot"],
             oldItem=Item.from_dict(data["oldItemDict"]),
-            newItem=Item.from_dict(data["oldItemDict"]),
+            newItem=Item.from_dict(data["newItemDict"]),
         )
 
     def marshal(self):
@@ -652,5 +667,50 @@ class UIContainerItemChangedServerEvent(ServerEvent):
             "playerId": self.playerId,
             "slot": self.slot,
             "oldItemDict": self.oldItem.marshal(),
-            "oldItemDict": self.newItem.marshal(),
+            "newItemDict": self.newItem.marshal(),
         }
+
+
+class InventoryItemChangedServerEvent(ServerEvent):
+    name = "InventoryItemChangedServerEvent"
+
+    def __init__(
+        self,
+        playerId,  # type: str
+        slot,  # type: int
+        oldItem,  # type: Item
+        newItem,  # type: Item
+    ):
+        self.playerId = playerId
+        """ 玩家实体id """
+        self.slot = slot
+        """ 背包槽位 """
+        self.oldItem = oldItem
+        """ 变化前槽位中的物品，格式参考物品信息字典 """
+        self.newItem = newItem
+        """ 变化后槽位中的物品，格式参考物品信息字典 """
+
+    @classmethod
+    def unmarshal(cls, data):
+        return cls(
+            playerId=data["playerId"],
+            slot=data["slot"],
+            oldItem=Item.from_dict(data["oldItemDict"]),
+            newItem=Item.from_dict(data["newItemDict"]),
+        )
+
+    def marshal(self):
+        # type: () -> dict
+        return {
+            "playerId": self.playerId,
+            "slot": self.slot,
+            "oldItemDict": self.oldItem.marshal(),
+            "newItemDict": self.newItem.marshal(),
+        }
+
+    @classmethod
+    def WithUserData(cls):
+        from mod.server.extraServerApi import GetEngineCompFactory, GetLevelId
+
+        GetEngineCompFactory().CreateItem(GetLevelId()).GetUserDataInEvent(cls.name)
+        return cls
