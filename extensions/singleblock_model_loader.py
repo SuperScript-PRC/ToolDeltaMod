@@ -8,6 +8,7 @@ from ..api.client import (
     AddActorBlockGeometry,
     DeleteActorBlockGeometry,
     SetEntityShadowShow,
+    SetPosForClientEntity,
 )
 from ..api.common import ExecLater
 
@@ -16,12 +17,16 @@ if 0:
 
 
 class GeometryModel(object):
-    def __init__(self, entity_id):
-        # type: (str) -> None
+    def __init__(self, entity_id, x, y, z):
+        # type: (str, float, float, float) -> None
         self.entity_id = entity_id
         self.geo_id = None
         self._last_block_id = None
         self._last_block_aux = None
+        self._last_scale = None
+        self.x = x
+        self.y = y
+        self.z = z
 
     def SetBlockPaletteModel(self, block_palette, geo_id, scale=None):
         # type: (typing.Any, str, tuple[float, float, float] | None) -> bool
@@ -39,28 +44,42 @@ class GeometryModel(object):
                 print("[Warning] set geometry scale failed")
         return final_res
 
-    def SetBlockModel(self, block_name, aux, scale=None):
-        # type: (str, int, tuple[float, float, float] | None) -> bool
-        if block_name == self._last_block_id and aux == self._last_block_aux:
-            return True
-        if self.geo_id is not None:
-            res = self.RemoveGeometry()
-            if not res:
-                print("[Warning] last geometry remove failed")
-        pal = NewSingleBlockPalette(block_name, aux)
-        self.geo_id = block_name + ":" + str(aux)
-        self.geo_id = CombineBlockPaletteToGeometry(pal, self.geo_id)
-        if self.geo_id is None:
-            raise Exception("Failed to create geometry: " + self.geo_id)
-        final_res = AddActorBlockGeometry(self.entity_id, self.geo_id)
-        if scale is not None:
+    def SetBlockModel(self, block_name, aux, scale=None, offset=None):
+        # type: (str, int, tuple[float, float, float] | None, tuple[float, float, float] | None) -> bool
+        ok = True
+        if offset is not None:
+            offset_x, offset_y, offset_z = offset
+            ok = ok and SetPosForClientEntity(
+                self.entity_id,
+                (self.x + offset_x, self.y + offset_y, self.z + offset_z),
+            )
+        if (
+            block_name != self._last_block_id
+            or aux != self._last_block_aux
+            or scale != self._last_scale
+        ):
+            if self.geo_id is not None:
+                res = self.RemoveGeometry()
+                if not res:
+                    print("[Warning] last geometry remove failed")
+            pal = NewSingleBlockPalette(block_name, aux)
+            self.geo_id = block_name + ":" + str(aux)
+            self.geo_id = CombineBlockPaletteToGeometry(pal, self.geo_id)
+            if self.geo_id is None:
+                raise Exception("Failed to create geometry: " + self.geo_id)
+            final_res = AddActorBlockGeometry(self.entity_id, self.geo_id)
+            if final_res:
+                self._last_block_id = block_name
+                self._last_block_aux = aux
+            ok = ok and final_res
+        if scale is not None and scale != self._last_scale and self.geo_id is not None:
             res = SetActorBlockGeometryScale(self.entity_id, self.geo_id, scale)
             if not res:
                 print("[Warning] set geometry scale failed")
-        if final_res:
-            self._last_block_id = block_name
-            self._last_block_aux = aux
-        return final_res
+            else:
+                self._last_scale = scale
+            ok = ok and res
+        return ok
 
     def RemoveGeometry(self):
         if self.geo_id is not None:
@@ -83,7 +102,7 @@ def CreateSingleBlockModelEntity(
     if entity_id is None:
         raise Exception("Failed to create entity: " + entity_name)
     SetEntityShadowShow(entity_id, False)
-    model = GeometryModel(entity_id)
+    model = GeometryModel(entity_id, *pos)
     return model, model.SetBlockModel(block_name, aux)
 
 
@@ -94,7 +113,7 @@ def CreateBlankModel(pos, entity_name="skybluetech:model_entity"):
     if entity_id is None:
         raise Exception("Failed to create entity: " + entity_name)
     SetEntityShadowShow(entity_id, False)
-    model = GeometryModel(entity_id)
+    model = GeometryModel(entity_id, x + 0.5, y, z + 0.5)
     return model
 
 
