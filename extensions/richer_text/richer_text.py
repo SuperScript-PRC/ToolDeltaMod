@@ -38,7 +38,7 @@ class RicherTextCtrl(object):
         self._simulate_image = ctrl["simulate_image"].asImage()
         self._simulate_hyperlink_btn = ctrl["simulate_hyperlink_btn"].asButton()
         self._simulate_item_renderer = ctrl["simulate_item_renderer"].asItemRenderer()
-        self._size_x, self._size_y = ctrl.GetSize()
+        self._size_x, _ = ctrl.GetSize()
         self._process_x = 0
         self._process_y = 0
         self._current_row_max_y = 0
@@ -269,7 +269,10 @@ class RicherTextCtrl(object):
         self._current_row_max_y = 0
 
     def _finish(self):
-        pass
+        self.ctrl.SetSize(
+            (self._size_x, self._process_y + self._current_row_max_y),
+            resize_children=True,
+        )
         # self._simulate_text.SetVisible(False)
         # self._simulate_image.SetVisible(False)
         # self._simulate_hyperlink_btn.SetVisible(False)
