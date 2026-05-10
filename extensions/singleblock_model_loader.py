@@ -1,4 +1,5 @@
 # coding=utf-8
+from mod_log import logger
 from ..api.client import (
     CombineBlockPaletteToGeometry,
     NewSingleBlockPalette,
@@ -33,7 +34,7 @@ class GeometryModel(object):
         if self.geo_id is not None:
             res = self.RemoveGeometry()
             if not res:
-                print("[Warning] last geometry remove failed")
+                logger.warning("last geometry remove failed")
         self.geo_id = CombineBlockPaletteToGeometry(block_palette, geo_id)
         if self.geo_id is None:
             raise Exception("Failed to create geometry: " + self.geo_id)
@@ -41,7 +42,8 @@ class GeometryModel(object):
         if scale is not None:
             res = SetActorBlockGeometryScale(self.entity_id, self.geo_id, scale)
             if not res:
-                print("[Warning] set geometry scale failed")
+                logger.warning("set geometry scale failed")
+                return False
         return final_res
 
     def SetBlockModel(self, block_name, aux, scale=None, offset=None):
@@ -61,7 +63,7 @@ class GeometryModel(object):
             if self.geo_id is not None:
                 res = self.RemoveGeometry()
                 if not res:
-                    print("[Warning] last geometry remove failed")
+                    logger.warning("[SkyblueTech] last geometry remove failed")
             pal = NewSingleBlockPalette(block_name, aux)
             self.geo_id = block_name + ":" + str(aux)
             self.geo_id = CombineBlockPaletteToGeometry(pal, self.geo_id)
@@ -75,7 +77,8 @@ class GeometryModel(object):
         if scale is not None and scale != self._last_scale and self.geo_id is not None:
             res = SetActorBlockGeometryScale(self.entity_id, self.geo_id, scale)
             if not res:
-                print("[Warning] set geometry scale failed")
+                logger.warning("[SkyblueTech] Set geometry scale failed")
+                return False
             else:
                 self._last_scale = scale
             ok = ok and res
@@ -87,7 +90,7 @@ class GeometryModel(object):
             self.geo_id = None
             return DeleteActorBlockGeometry(self.entity_id, geo_id)
         else:
-            print("[Warning] No geometry to remove")
+            logger.warning("[SkyblueTech] No geometry to remove")
             return False
 
     def Destroy(self):
