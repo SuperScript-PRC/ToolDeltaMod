@@ -145,6 +145,8 @@ def UpdateBlockStates(dim, pos, states, prev_states=None):
     # type: (int, tuple[int, int, int], dict, dict | None) -> bool
     if prev_states is None:
         prev_states = _getBlockStates(pos, dim)
+        if prev_states is None:
+            return False
     prev_states.update(states)
     return _setBlockStates(pos, prev_states, dim)
 
