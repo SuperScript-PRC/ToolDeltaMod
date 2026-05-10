@@ -8,6 +8,7 @@ allitems = set()  # type: set[str]
 allitems_by_tag = {}  # type: dict[str, set[str]]
 client_already_get_allitems = set()  # type: set[str]
 items_getted_callback = []
+game_loaded = False
 
 
 class GetAllItemsRequest(CustomC2SEvent):
@@ -100,6 +101,10 @@ def onClientReallyInited():
 
     @UiInitFinishedEvent.Listen()
     def onStartGame(event):
+        global game_loaded
+        if game_loaded:
+            return
+        game_loaded = True
         GetAllItemsRequest().send()
 
 

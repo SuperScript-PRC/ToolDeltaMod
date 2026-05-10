@@ -8,6 +8,7 @@ if 0:
 
 player_completely_loaded_cbs = []  # type: list[typing.Callable[[str], None]]
 loaded_players = set()  # type: set[str]
+loaded = False
 
 
 class _PlayerCompletelyLoadedNotify(CustomC2SEvent):
@@ -33,6 +34,10 @@ def AddPlayerCompletelyLoadedServerCallback(cb):
 def onClientInited():
     @UiInitFinishedEvent.Listen()
     def onUiInitFinished(_):
+        global loaded
+        if loaded:
+            return
+        loaded = True
         _PlayerCompletelyLoadedNotify().send()
 
 
