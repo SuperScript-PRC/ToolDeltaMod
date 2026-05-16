@@ -54,9 +54,6 @@ class S2CSync(object):
 
     def __init__(self, mode, sync_id=None):
         # type: (int, str | None) -> None
-        if self.__class__ is S2CSync:
-            # 本类实例化时什么也不做
-            return
         self.sync_id = sync_id or self.GenerateSpecName()
         self._mode = mode
         self.activated = False

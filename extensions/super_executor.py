@@ -2,9 +2,37 @@ class SuperExecutorMeta(type):
     """
     类方法覆盖执行类。
 
-    使得类的 __metaclass__ = FuncMeta 后,
+    使得类的 __metaclass__ = SuperExecutorMeta 后,
     再为类方法加上 @execute_super 装饰器
     就可以让最终子类在执行方法时按照继承顺序覆盖执行父类里的每一个同名方法 (也要 @execute_super 装饰)。
+    ```python
+    class A:
+        @SuperExecutorMeta.execute_super
+        def method(self):
+            print "Hello from A"
+
+    class B(A):
+        @SuperExecutorMeta.execute_super
+        def method(self):
+            print "Hello from B"
+
+    class C(A):
+        @SuperExecutorMeta.execute_super
+        def method(self):
+            print "Hello from C"
+
+    class D(B, C):
+        @SuperExecutorMeta.execute_super
+        def method(self):
+            print "Hello from D"
+
+    >>> D().method()
+    Hello from A
+    Hello from B
+    Hello from C
+    Hello from D
+
+    ```
     """
 
     _ATTR_KEY = "_execute_super"
@@ -69,12 +97,15 @@ class SuperExecutorMeta(type):
 
     @classmethod
     def execute_super(cls, func):
+        "使得在执行类方法时, 会先行按 MRO 顺序遍历执行父类的每一个同名方法 (使用相同参数)。"
         func._execute_super = True
         func._execute_super_blacklist = set()
         return func
 
     @classmethod
     def execute_super_with_blacklist(cls, *blacklist_args):
+        "使得在遍历执行父类同名方法时不执行某些父类的方法。"
+
         def wrapper(func):
             func._execute_super = True
             func._execute_super_blacklist = set(blacklist_args)
