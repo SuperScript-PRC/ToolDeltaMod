@@ -9,3 +9,8 @@ try:
     py2_unicode = unicode  # type: ignore
 except NameError:
     py2_unicode = str
+
+try:
+    py2_long = long  # type: ignore
+except NameError:
+    py2_long = int
