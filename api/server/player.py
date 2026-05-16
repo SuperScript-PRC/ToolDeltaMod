@@ -143,6 +143,7 @@ __all__ = [
     "GetPlayerItem",
     "GetAllInventoryItems",
     "GetPlayerGameType",
+    "GiveItem",
     "IsOP",
     "IsSneaking",
     "PlayerUseItemToPos",
