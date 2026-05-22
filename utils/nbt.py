@@ -1,7 +1,9 @@
 # coding=utf-8
 # TYPE_CHECKING
 if 0:
-    from typing import Any
+    import typing
+
+    T = typing.TypeVar("T")
 # TYPE_CHECKING END
 
 NBT_BYTE = 1
@@ -17,54 +19,54 @@ NBT_COMPOUND = 10
 NBT_INT_ARRAY = 11
 
 
-def Tp(typ, val):
+def NbtValue(typ, val):
     return {"__type__": typ, "__value__": val}
 
 
 def Byte(val):
     # type: (bool) -> dict
-    return Tp(NBT_BYTE, val)
+    return NbtValue(NBT_BYTE, val)
 
 
 def Short(val):
     # type: (int) -> dict
-    return Tp(NBT_SHORT, val)
+    return NbtValue(NBT_SHORT, val)
 
 
 def Int(val):
     # type: (int) -> dict
-    return Tp(NBT_INT, val)
+    return NbtValue(NBT_INT, val)
 
 
 def Long(val):
     # type: (int) -> dict
-    return Tp(NBT_LONG, val)
+    return NbtValue(NBT_LONG, val)
 
 
 def Float(val):
     # type: (float) -> dict
-    return Tp(NBT_FLOAT, val)
+    return NbtValue(NBT_FLOAT, val)
 
 
 def Double(val):
     # type: (float) -> dict
-    return Tp(NBT_DOUBLE, val)
+    return NbtValue(NBT_DOUBLE, val)
 
 
 def ByteArray(val):
     # type: (list) -> dict
-    return Tp(NBT_BYTE_ARRAY, val)
+    return NbtValue(NBT_BYTE_ARRAY, val)
 
 
 def String(val):
     # type: (str) -> dict
-    return Tp(NBT_STRING, val)
+    return NbtValue(NBT_STRING, val)
 
 
 def List(val):
     # type: (list) -> dict
     """WARNING: 一些地方可以直接使用 list。"""
-    return Tp(NBT_LIST, val)
+    return NbtValue(NBT_LIST, val)
 
 
 def GenericList(val):
@@ -75,12 +77,19 @@ def GenericList(val):
 def Compound(val):
     # type: (dict) -> dict
     """WARNING: 大部分地方都可以直接使用 dict。"""
-    return Tp(NBT_COMPOUND, val)
+    return NbtValue(NBT_COMPOUND, val)
 
 
 def IntArray(val):
     # type: (list) -> dict
-    return Tp(NBT_INT_ARRAY, val)
+    return NbtValue(NBT_INT_ARRAY, val)
+
+
+def ValueOf(nbt):
+    if isinstance(nbt, dict) and "__type__" in nbt:
+        return nbt["__value__"]
+    else:
+        return nbt
 
 
 def GetValue(nbt, key):
@@ -88,11 +97,30 @@ def GetValue(nbt, key):
 
 
 def GetValueWithDefault(nbt, key, default):
-    return nbt.get(key, {}).get("__value__", default)
+    # type: (dict, str, T) -> T | typing.Any
+    """
+    从 NBT dict 中获取指定键的值，若键不存在则返回默认值。
+
+    Args:
+        nbt (dict): NBT dict
+        key (str): 键名
+        default (T): 默认值
+
+    Returns:
+        T | Any: 键对应的值
+    """
+    res = nbt.get(key, {})
+    if isinstance(res, list):
+        return res
+    elif res.get("__type__") == NBT_BYTE:
+        val = res.get("__value__", default)
+        return bool(val) if val != 2 else None
+    else:
+        return res.get("__value__", default)
 
 
 def Py2NBT(arg):
-    # type: (Any) -> Any
+    # type: (typing.Any) -> typing.Any
     """
     将 Python 基本类型转换为 NBT dict。
 
@@ -100,7 +128,7 @@ def Py2NBT(arg):
         arg (Any): 传入对象
 
     Returns:
-        _type_: NBT dict
+        Any: NBT dict
     """
     if isinstance(arg, dict):
         return {k: Py2NBT(v) for k, v in arg.items()}
@@ -148,7 +176,7 @@ def Py2NBT(arg):
 
 
 def NBT2Py(arg):
-    # type: (Any) -> Any
+    # type: (typing.Any) -> typing.Any
     """
     将 NBT dict 转换为剔除 `__type__` 和 `__value__` Python 对象。
     注意: 这将丢失进一步的数值类型。
