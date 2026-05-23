@@ -351,8 +351,7 @@ class ServerPlayerTryDestroyBlockEvent(ServerEvent):
         """ 试图破坏方块的玩家ID """
         self.dimensionId = dimensionId
         """ 维度id """
-        self.spawnResources = spawnResources
-        """ 是否生成掉落物，默认为True，在脚本层设置为False就能取消生成掉落物 """
+        self._spawnResources = spawnResources
         self._orig = _orig
         """ 原始事件数据 """
 
@@ -382,7 +381,7 @@ class ServerPlayerTryDestroyBlockEvent(ServerEvent):
             "auxData": self.auxData,
             "playerId": self.playerId,
             "dimensionId": self.dimensionId,
-            "spawnResources": self.spawnResources,
+            "spawnResources": self._spawnResources,
             "_orig": self._orig,
         }
 
@@ -390,6 +389,16 @@ class ServerPlayerTryDestroyBlockEvent(ServerEvent):
         # type: () -> None
         "默认为False，在脚本层设置为True就能取消该方块的破坏"
         self._orig["cancel"] = True
+
+    @property
+    def spawnResources(self):
+        """是否生成掉落物，默认为True，在脚本层设置为False就能取消生成掉落物"""
+        return self._spawnResources
+
+    @spawnResources.setter
+    def spawnResources(self, value):
+        self._spawnResources = value
+        self._orig["spawnResources"] = value
 
 
 class BlockRemoveServerEvent(ServerEvent):
