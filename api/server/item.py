@@ -14,15 +14,15 @@ _setAttackDamage = MethodCacher(lambda: CF.CreateItem(GetLevelId()).SetAttackDam
 ItemExists = _lookupItemByName
 
 
-def GetItemBasicInfo(itemName):
-    # type: (str) -> BasicItemInfo
-    basic_info = itemBasicInfoPool.get(itemName)
+def GetItemBasicInfo(itemName, aux=0):
+    # type: (str, int) -> BasicItemInfo
+    basic_info = itemBasicInfoPool.get((itemName, aux))
     if basic_info is not None:
         return basic_info
     basic_info = BasicItemInfo().unmarshal(
-        CF.CreateItem(GetLevelId()).GetItemBasicInfo(itemName)
+        CF.CreateItem(GetLevelId()).GetItemBasicInfo(itemName, aux)
     )
-    itemBasicInfoPool[itemName] = basic_info
+    itemBasicInfoPool[(itemName, aux)] = basic_info
     return basic_info
 
 
