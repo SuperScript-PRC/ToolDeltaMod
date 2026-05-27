@@ -3,7 +3,7 @@ from ..internal import (
     InServerEnv,
 )
 
-itemBasicInfoPool = {}  # type: dict[str, BasicItemInfo]
+itemBasicInfoPool = {}  # type: dict[tuple[str, int], BasicItemInfo]
 
 
 class Item(object):
@@ -113,7 +113,7 @@ class Item(object):
         return bool(self.enchantData or self.modEnchantData)
 
     def GetBasicInfo(self):
-        cached = itemBasicInfoPool.get(self.newItemName)
+        cached = itemBasicInfoPool.get((self.newItemName, self.newAuxValue))
         if cached is not None:
             return cached
         if InServerEnv():
@@ -122,7 +122,7 @@ class Item(object):
             raw_info = (
                 GetEngineCompFactory()
                 .CreateItem(GetLevelId())
-                .GetItemBasicInfo(self.newItemName, self.newAuxValue, self.isEnchanted)
+                .GetItemBasicInfo(self.newItemName, self.newAuxValue)
             )
             if raw_info is None:
                 raise ValueError("Can't get basic info of " + self.newItemName)
@@ -135,7 +135,7 @@ class Item(object):
                 .CreateItem(GetLevelId())
                 .GetItemBasicInfo(self.newItemName, self.newAuxValue, self.isEnchanted)
             )
-        itemBasicInfoPool[self.newItemName] = res
+        itemBasicInfoPool[(self.newItemName, self.newAuxValue)] = res
         return res
 
     def CanMerge(self, other, deny_enchant=True):
