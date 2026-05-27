@@ -86,6 +86,7 @@ def IntArray(val):
 
 
 def ValueOf(nbt):
+    # type: (dict) -> typing.Any
     if isinstance(nbt, dict) and "__type__" in nbt:
         return nbt["__value__"]
     else:
