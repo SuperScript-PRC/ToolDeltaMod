@@ -77,7 +77,11 @@ def dynListen(event, listener, priority=0):
                 cb(event_ins)
 
         event_bus_handler.__name__ = (
-            "tdsysevent_handler_" + event.__name__ + str(priority)
+            "tdsrvevent_handler_"
+            + event.__module__
+            + "."
+            + event.__name__
+            + str(priority)
         )
         system_event_listeners.setdefault(priority, {})[event] = event_bus_handler
         if system_inited:
