@@ -319,6 +319,64 @@ class BlockNeighborChangedServerEvent(ServerEvent):
         }
 
 
+class BlockStrengthChangedServerEvent(ServerEvent):
+    name = "BlockStrengthChangedServerEvent"
+
+    def __init__(
+        self,
+        posX,  # type: int
+        posY,  # type: int
+        posZ,  # type: int
+        blockName,  # type: str
+        auxValue,  # type: int
+        newStrength,  # type: int
+        oldStrength,  # type: int
+        dimensionId,  # type: int
+    ):
+        self.posX = posX
+        """ 方块x坐标 """
+        self.posY = posY
+        """ 方块y坐标 """
+        self.posZ = posZ
+        """ 方块z坐标 """
+        self.blockName = blockName
+        """ 方块的identifier，包含命名空间及名称 """
+        self.auxValue = auxValue
+        """ 方块附加值 """
+        self.newStrength = newStrength
+        """ 变化后的红石信号量 """
+        self.oldStrength = oldStrength
+        """ 变化前的红石信号量 """
+        self.dimensionId = dimensionId
+        """ 维度 """
+
+    @classmethod
+    def unmarshal(cls, data):
+        return cls(
+            posX=data["posX"],
+            posY=data["posY"],
+            posZ=data["posZ"],
+            blockName=data["blockName"],
+            auxValue=data["auxValue"],
+            newStrength=data["newStrength"],
+            oldStrength=data["oldStrength"],
+            dimensionId=data["dimensionId"],
+        )
+
+    def marshal(self):
+        # type: () -> dict
+        return {
+            "posX": self.posX,
+            "posY": self.posY,
+            "posZ": self.posZ,
+            "blockName": self.blockName,
+            "auxValue": self.auxValue,
+            "newStrength": self.newStrength,
+            "oldStrength": self.oldStrength,
+            "dimensionId": self.dimensionId,
+        }
+
+
 class ServerPlayerTryDestroyBlockEvent(ServerEvent):
     name = "ServerPlayerTryDestroyBlockEvent"
 
