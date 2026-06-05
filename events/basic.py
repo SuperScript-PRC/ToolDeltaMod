@@ -4,12 +4,20 @@ from ..internal import GetServer, GetClient
 class BaseEvent(object):
     name = "Event"
 
+    def marshal(self):  # type: () -> dict
+        raise NotImplementedError
+
     @classmethod
     def unmarshal(
         cls,
         data,  # type: dict
     ):
         return cls()
+
+    def broadcast(self):
+        from .notify import Broadcast
+
+        Broadcast(self)
 
 
 class ServerEvent(BaseEvent):
@@ -51,9 +59,6 @@ class CustomC2SEvent(ServerEvent):
 
     name = "CustomServerEvent"
 
-    def marshal(self):  # type: () -> dict
-        raise NotImplementedError
-
     def send(self):
         from .notify import NotifyToServer
 
@@ -66,9 +71,6 @@ class CustomS2CEvent(ClientEvent):
     """
 
     name = "CustomClientEvent"
-
-    def marshal(self):  # type: () -> dict
-        raise NotImplementedError
 
     def send(self, client_id):
         # type: (str) -> None
@@ -87,11 +89,3 @@ class CustomS2CEvent(ClientEvent):
         from .notify import NotifyToAll
 
         NotifyToAll(self)
-
-
-def NewClientEventData():
-    return GetClient().CreateEventData()
-
-
-def NewServerEventData():
-    return GetServer().CreateEventData()

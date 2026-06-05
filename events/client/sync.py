@@ -1,7 +1,5 @@
 # coding=utf-8
-
 from mod.client import extraClientApi as clientApi
-from ...internal import GetClient, GetServer
 from ..basic import CustomC2SEvent, CustomS2CEvent
 
 
@@ -10,22 +8,20 @@ class ClientNewSync(CustomC2SEvent):
 
     pid = ""
 
-    def __init__(self, sync_name=""):
+    def __init__(self, sync_name="", pid=""):
         self.sync_name = sync_name
+        self.pid = pid
 
     @classmethod
     def unmarshal(cls, data):
         # type: (dict) -> ClientNewSync
-        instance = cls()
-        instance.sync_name = data["sync_name"]
-        instance.pid = data["pid"]
-        return instance
+        return cls(data["sync_name"], data["pid"])
 
     def marshal(self):
-        m = GetClient().CreateEventData()
-        m["sync_name"] = self.sync_name
-        m["pid"] = clientApi.GetLocalPlayerId()
-        return m
+        return {
+            "sync_name": self.sync_name,
+            "pid": clientApi.GetLocalPlayerId(),
+        }
 
 
 class ClientPopSync(CustomC2SEvent):
@@ -33,22 +29,20 @@ class ClientPopSync(CustomC2SEvent):
 
     pid = ""
 
-    def __init__(self, sync_name=""):
+    def __init__(self, sync_name="", pid=""):
         self.sync_name = sync_name
+        self.pid = pid
 
     @classmethod
     def unmarshal(cls, data):
         # type: (dict) -> ClientPopSync
-        instance = cls()
-        instance.sync_name = data["sync_name"]
-        instance.pid = data["pid"]
-        return instance
+        return cls(data["sync_name"], data["pid"])
 
     def marshal(self):
-        m = GetClient().CreateEventData()
-        m["sync_name"] = self.sync_name
-        m["pid"] = clientApi.GetLocalPlayerId()
-        return m
+        return {
+            "sync_name": self.sync_name,
+            "pid": clientApi.GetLocalPlayerId(),
+        }
 
 
 class ServerDelSync(CustomS2CEvent):
@@ -65,9 +59,9 @@ class ServerDelSync(CustomS2CEvent):
         return instance
 
     def marshal(self):
-        m = GetServer().CreateEventData()
-        m["sync_name"] = self.sync_name
-        return m
+        return {
+            "sync_name": self.sync_name,
+        }
 
 
 class S2CSyncDatas(CustomS2CEvent):
@@ -85,6 +79,6 @@ class S2CSyncDatas(CustomS2CEvent):
         return instance
 
     def marshal(self):
-        m = GetServer().CreateEventData()
-        m["datas"] = self.sync_datas
-        return m
+        return {
+            "datas": self.sync_datas,
+        }

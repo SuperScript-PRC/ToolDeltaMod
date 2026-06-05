@@ -1,5 +1,5 @@
 from ..internal import GetClient, GetServer
-from .basic import CustomC2SEvent, CustomS2CEvent
+from .basic import BaseEvent, CustomC2SEvent, CustomS2CEvent
 
 
 def NotifyToServer(event):
@@ -19,8 +19,9 @@ def NotifyToClients(targetIds, event):
 
 def NotifyToAll(event):
     # type: (CustomS2CEvent) -> None
-    from mod.server import extraServerApi as serverApi
+    GetServer().BroadcastToAllClient(event.name, event.marshal())
 
-    GetServer().NotifyToMultiClients(
-        serverApi.GetPlayerList(), event.name, event.marshal()
-    )
+
+def Broadcast(event):
+    # type: (BaseEvent) -> None
+    GetServer().BroadcastEvent(event.name, event.marshal())

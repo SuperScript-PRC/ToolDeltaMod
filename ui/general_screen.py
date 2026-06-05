@@ -16,6 +16,8 @@ if 0:
 ScreenNode = clientApi.GetScreenNodeCls()
 ScreenProxy = clientApi.GetUIScreenProxyCls()
 
+SUPPORT_DYNA_BINDING = True
+
 
 class ToolDeltaScreen(ClientListenerService):
     _ATTR_EVENT_LISTENER = "_tdscreen_event_listen"
@@ -38,6 +40,7 @@ class ToolDeltaScreen(ClientListenerService):
         )
         self._activated = False
         self._vars = {}
+        self._dyna_bindings = {}
 
     def AddElement(self, ctrl_def_name, ctrl_name, force_update=True, _parent=None):
         # type: (str, str, bool, UBaseCtrl | None) -> UBaseCtrl
@@ -245,6 +248,7 @@ class ToolDeltaScreen(ClientListenerService):
         self.OnCreate()
 
     def _on_destroy(self):
+        self._clear_dyna_bindings()
         self._do_deactive(from_destroy=True)
         self.OnDestroy()
 
@@ -280,3 +284,104 @@ class ToolDeltaScreen(ClientListenerService):
     def OnTicking(self):
         "子类覆写该方法"
         pass
+
+    if SUPPORT_DYNA_BINDING:
+
+        def DynaBinding(self, bind_flag, binding_name, binding_func):
+            # type: (int, str, typing.Callable) -> None
+            """
+            动态绑定。相当于 ViewBinder.binding, 可以实时注册和反注册。
+            """
+            key = self._get_dyna_binding_key(bind_flag, binding_name, None)
+            self._dyna_unbinding(key)
+            raw_func = self._make_dyna_binding_func(binding_func, binding_name)
+            Binder.binding(bind_flag, binding_name)(raw_func)
+            func = self._bind_dyna_func(raw_func)
+            self._dyna_bindings[key] = func
+            self._screen_instance._process_default(func, self._get_dyna_screen_name())  # pyright: ignore[reportAttributeAccessIssue]
+
+        def DynaUnbinding(self, bind_flag, binding_name):
+            # type: (int, str) -> None
+            """
+            动态反绑定。
+            """
+            key = self._get_dyna_binding_key(bind_flag, binding_name, None)
+            self._dyna_unbinding(key)
+
+        def DynaBindingCollection(
+            self, bind_flag, collection_name, binding_name, binding_func
+        ):
+            # type: (int, str, str, typing.Callable) -> None
+            """
+            动态绑定集合。相当于 ViewBinder.binding_collection, 可以实时注册和反注册。
+            """
+            key = self._get_dyna_binding_key(bind_flag, binding_name, collection_name)
+            self._dyna_unbinding(key)
+            raw_func = self._make_dyna_binding_func(binding_func, binding_name)
+            Binder.binding_collection(bind_flag, collection_name, binding_name)(
+                raw_func
+            )
+            func = self._bind_dyna_func(raw_func)
+            self._dyna_bindings[key] = func
+            self._screen_instance._process_collection(  # pyright: ignore[reportAttributeAccessIssue]
+                func, self._get_dyna_screen_name()
+            )
+
+        def DynaUnbindingCollection(self, bind_flag, collection_name):
+            # type: (int, str) -> None
+            """
+            动态反绑定集合。
+            """
+            for key in list(self._dyna_bindings.keys()):
+                key_bind_flag, _, key_collection_name = key
+                if (
+                    key_bind_flag == bind_flag
+                    and key_collection_name == collection_name
+                ):
+                    self._dyna_unbinding(key)
+
+        def _get_dyna_screen_name(self):
+            # type: () -> str
+            return self._screen_node.screen_name or self._screen_node.full_name
+
+        @staticmethod
+        def _get_dyna_binding_key(bind_flag, binding_name, collection_name):
+            # type: (int, str, str | None) -> tuple[int, str, str | None]
+            return (bind_flag, binding_name, collection_name)
+
+        @staticmethod
+        def _make_dyna_binding_func(binding_func, binding_name):
+            # type: (typing.Callable, str) -> typing.Callable
+            def _wrapper(screen_ins, *args):
+                return binding_func(*args)
+
+            _wrapper.__module__ = getattr(binding_func, "__module__", __name__)
+            _wrapper.__name__ = getattr(binding_func, "__name__", "dyna_binding")
+            if hasattr(binding_func, "func_name"):
+                _wrapper.func_name = getattr(binding_func, "func_name")
+            elif binding_name:
+                _wrapper.func_name = str(binding_name).strip("#%").replace(".", "_")
+            return _wrapper
+
+        def _bind_dyna_func(self, func):
+            # type: (typing.Callable) -> typing.Callable
+            return func.__get__(self._screen_instance, self._screen_instance.__class__)
+
+        def _dyna_unbinding(self, key):
+            # type: (tuple[int, str, str | None]) -> None
+            func = self._dyna_bindings.pop(key, None)
+            if func is None:
+                return
+            if key[2] is None:
+                self._screen_instance._process_default_unregister(  # pyright: ignore[reportAttributeAccessIssue]
+                    func, self._get_dyna_screen_name()
+                )
+            else:
+                self._screen_instance._process_collection_unregister(  # pyright: ignore[reportAttributeAccessIssue]
+                    func, self._get_dyna_screen_name()
+                )
+
+        def _clear_dyna_bindings(self):
+            # type: () -> None
+            for key in list(self._dyna_bindings.keys()):
+                self._dyna_unbinding(key)
