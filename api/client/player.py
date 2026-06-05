@@ -1,6 +1,7 @@
 # coding=utf-8
 from mod.client.extraClientApi import (
     GetEngineCompFactory,
+    GetLevelId,
     GetPlayerList,
     GetLocalPlayerId,
     GetMinecraftEnum,
@@ -54,6 +55,35 @@ def GetLocalPlayerHotbarAndInvItems(get_user_data=False):
     ]
 
 
+def GetLocalPlayerTotalExp():
+    # type: () -> int
+    return int(CF.CreateGame(GetLevelId()).GetPlayerTotalExp(GetLocalPlayerId()))
+
+
+def GetLevelByTotalExp(total_exp):
+    # type: (int) -> int
+    if total_exp <= 0:
+        return 0
+    level = 0
+    exp_left = int(total_exp)
+    while True:
+        if level <= 15:
+            need = 2 * level + 7
+        elif level <= 30:
+            need = 5 * level - 38
+        else:
+            need = 9 * level - 158
+        if exp_left < need:
+            return level
+        exp_left -= need
+        level += 1
+
+
+def GetLocalPlayerLevelByExp():
+    # type: () -> int
+    return GetLevelByTotalExp(GetLocalPlayerTotalExp())
+
+
 __all__ = [
     "GetNameById",
     "GetPlayerDimensionId",
@@ -62,4 +92,7 @@ __all__ = [
     "GetPlayerMainhandItem",
     "GetLocalPlayerMainhandItem",
     "GetLocalPlayerHotbarAndInvItems",
+    "GetLocalPlayerTotalExp",
+    "GetLevelByTotalExp",
+    "GetLocalPlayerLevelByExp",
 ]
