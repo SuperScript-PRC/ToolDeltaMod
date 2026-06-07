@@ -11,11 +11,11 @@ class OnKeyPressInGame(ClientEvent):
 
     KeyBoardType = _KeyBoardType
 
-    screenName = '' # type: str
+    screenName = ""  # type: str
     """ 当前screenName """
-    key = 0 # type: int
+    key = 0  # type: int
     """ 键码，详见KeyBoardType枚举 """
-    isDown = 1 # type: int
+    isDown = 1  # type: int
     """ 是否按下，按下为1，弹起为0 """
 
     @classmethod
@@ -35,3 +35,22 @@ class OnKeyPressInGame(ClientEvent):
             "isDown": str(self.isDown),
         }
 
+
+class MouseWheelClientEvent(ClientEvent):
+    name = "MouseWheelClientEvent"
+
+    direction = 0  # type: int
+    """ 1为向上滚动，0为向下滚动 """
+
+    @classmethod
+    def unmarshal(cls, data):
+        # type: (dict) -> MouseWheelClientEvent
+        instance = cls()
+        instance.direction = int(data["direction"])
+        return instance
+
+    def marshal(self):
+        # type: () -> dict
+        return {
+            "direction": str(self.direction),
+        }
