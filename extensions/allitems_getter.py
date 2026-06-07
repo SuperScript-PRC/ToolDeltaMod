@@ -110,7 +110,12 @@ def onClientReallyInited():
 
 def GetAllItems():
     # type: () -> set[str]
-    "ClientSide function"
+    """
+    客户端侧函数。获取已加载的所有物品 ID 的集合。
+
+    Returns:
+        set[str]: 所有物品 ID 的集合
+    """
     return allitems
 
 
