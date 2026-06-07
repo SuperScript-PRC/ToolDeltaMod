@@ -144,7 +144,7 @@ class OnCustomKeyPressInGame(ClientEvent):
         """ 键码 """
         self.category = category
         """ 按键分类 """
-        self.isDown = isDown
+        self.isDown = int(isDown)
         """ 按下状态 ("1"为按下, "0"为抬起) """
         self.screenName = screenName
         """ 当前屏幕名称 """
@@ -165,6 +165,6 @@ class OnCustomKeyPressInGame(ClientEvent):
             "name": self.name,
             "key": self.key,
             "category": self.category,
-            "isDown": self.isDown,
+            "isDown": str(self.isDown),
             "screenName": self.screenName,
         }
