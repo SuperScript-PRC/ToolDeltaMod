@@ -100,11 +100,11 @@ class ToolDeltaScreen(ClientListenerService):
 
     def RemoveUI(self):
         self._do_deactive()
-        if isinstance(self.base, ScreenNode):
-            self.base.SetRemove()
-        else:
+        if self._screen_cls is not None:
+            return self.base.SetRemove()
+        elif self._screen_proxy_cls is not None:
             if clientApi.GetTopUINode() is self.base:
-                clientApi.PopTopUI()
+                return clientApi.PopTopUI()
 
     @classmethod
     def _register_as_screen(
