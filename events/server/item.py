@@ -519,6 +519,7 @@ class ItemDurabilityChangedServerEvent(ServerEvent):
             durabilityBefore=data["durabilityBefore"],
             durability=data["durability"],
             canChange=data["canChange"],
+            _orig=data,
         )
 
     def marshal(self):
