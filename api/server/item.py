@@ -70,15 +70,23 @@ def GetPlayerUIItem(player_id, slot, get_user_data=False, is_netease_ui=False):
 
 
 def SpawnItemToPlayerInv(player_id, item):
-    # type: (str, Item) -> None
-    CF.CreateItem(GetLevelId()).SpawnItemToPlayerInv(item.marshal(), player_id)
+    # type: (str, Item) -> bool
+    return CF.CreateItem(GetLevelId()).SpawnItemToPlayerInv(item.marshal(), player_id)
 
 
 def SetPlayerUIItem(player_id, slot, item, need_back=False, is_netease_ui=False):
-    # type: (str, int, Item, bool, bool) -> None
-    CF.CreateItem(GetLevelId()).SetPlayerUIItem(
+    # type: (str, int, Item, bool, bool) -> bool
+    return CF.CreateItem(GetLevelId()).SetPlayerUIItem(
         player_id, slot, item.marshal(), need_back, is_netease_ui
     )
+
+
+def SetItemLayer(item, layer, texture):
+    # type: (Item, int, str) -> bool
+    item_dict = item.marshal()
+    res = CF.CreateItem(GetLevelId()).SetItemLayer(item_dict, layer, texture)
+    item.unmarshal(item_dict)
+    return res
 
 
 __all__ = [
@@ -90,4 +98,5 @@ __all__ = [
     "SpawnItemToPlayerInv",
     "SetPlayerUIItem",
     "SetAttackDamage",
+    "SetItemLayer",
 ]
