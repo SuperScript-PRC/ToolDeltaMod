@@ -74,6 +74,23 @@ def Hurt(
     )
 
 
+def AddEffectToEntity(entity_id, effect_name, duration, amplifier=0, show_particles=True):
+    # type: (str, str, float, int, bool) -> bool
+    return CF.CreateEffect(entity_id).AddEffectToEntity(
+        effect_name, duration, amplifier, show_particles
+    )
+
+
+def RemoveEffectFromEntity(entity_id, effect_name):
+    # type: (str, str) -> bool
+    return CF.CreateEffect(entity_id).RemoveEffectFromEntity(effect_name)
+
+
+def HasEffect(entity_id, effect_name):
+    # type: (str, str) -> bool
+    return CF.CreateEffect(entity_id).HasEffect(effect_name)
+
+
 __all__ = [
     "GetEntityDimension",
     "GetEntitiesInSquareArea",
@@ -83,6 +100,9 @@ __all__ = [
     "GetEntityTypeFamily",
     "GetPos",
     "Hurt",
+    "AddEffectToEntity",
+    "RemoveEffectFromEntity",
+    "HasEffect",
     "SpawnDroppedItem",
     "SetMotion",
     "DestroyEntity",
