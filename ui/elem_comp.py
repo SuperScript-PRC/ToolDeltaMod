@@ -205,9 +205,7 @@ class UBaseCtrl(object):
 
     def GetElement(self, path):
         # type: (str | UIPath) -> UBaseCtrl
-        if isinstance(path, UIPath):
-            path = path.base
-        ctrl = UBaseCtrl(self._root, self.base.GetChildByPath("/" + path))
+        ctrl = UBaseCtrl(self._root, self.base.GetChildByPath("/" + str(path)))
         return ctrl
 
     # ====

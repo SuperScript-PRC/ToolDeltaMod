@@ -61,14 +61,10 @@ class ToolDeltaScreen(EventListenerService):
         self,
         path,  # type: str | UIPath
     ):
-        if isinstance(path, UIPath):
-            path = path.base
-        return self.base.GetBaseUIControl(path)
+        return self.base.GetBaseUIControl(str(path))
 
     def GetElement(self, path):
         # type: (str | UIPath) -> UBaseCtrl
-        if isinstance(path, UIPath):
-            path = path.base
         return UBaseCtrl(self, self.GetBaseUIControl(path))
 
     @classmethod
