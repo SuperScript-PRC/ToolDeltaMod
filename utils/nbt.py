@@ -94,7 +94,16 @@ def ValueOf(nbt):
 
 
 def GetValue(nbt, key):
-    return nbt.get(key, {}).get("__value__")
+    res = nbt.get(key, {})
+    if isinstance(res, list):
+        return res
+    elif res is None:
+        return None
+    elif res.get("__type__") == NBT_BYTE:
+        val = res.get("__value__")
+        return bool(val) if val != 2 else None
+    else:
+        return res.get("__value__")
 
 
 def GetValueWithDefault(nbt, key, default):
