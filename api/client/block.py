@@ -86,8 +86,15 @@ SetBlockEntityMolangValue = MethodCacher(
     lambda: CF.CreateBlockInfo(GetLevelId()).SetBlockEntityMolangValue
 )
 SetCrackFrame = MethodCacher(lambda: CF.CreateBlockInfo(GetLevelId()).SetCrackFrame)
+AddTerrainDestroyParticleEffect = MethodCacher(
+    lambda: CF.CreateBlockInfo(GetLevelId()).AddTerrainDestroyParticleEffect
+)
+RemoveTerrainDestroyParticleEffect = MethodCacher(
+    lambda: CF.CreateBlockInfo(GetLevelId()).RemoveTerrainDestroyParticleEffect
+)
 
 __all__ = [
+    "AddTerrainDestroyParticleEffect",
     "GetBlankBlockPalette",
     "GetBlockName",
     "GetBlockNameAndAux",
@@ -98,6 +105,7 @@ __all__ = [
     "NewSingleBlockPalette",
     "CombineBlockPaletteToGeometry",
     "AddBlockUseListener",
+    "RemoveTerrainDestroyParticleEffect",
     "SetBlockEntityMolangValue",
     "SetCrackFrame",
 ]
