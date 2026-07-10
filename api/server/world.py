@@ -22,6 +22,17 @@ def GetRecipesByResult(item_id, recipe_tag, aux_value=0, maxResultNum=-1):
     return _getRecipesByResult(item_id, recipe_tag, aux_value, maxResultNum)
 
 
+_checkChunkState = MethodCacher(
+    lambda: CF.CreateChunkSource(GetLevelId()).CheckChunkState
+)
+
+
+def CheckChunkState(dim, pos):
+    # type: (int, tuple[int, int, int]) -> bool
+    """判断指定位置所在区块是否加载完成。"""
+    return _checkChunkState(dim, pos)
+
+
 GetLocalTime = MethodCacher(lambda: CF.CreateDimension(GetLevelId()).GetLocalTime)
 IsRaining = MethodCacher(lambda: CF.CreateWeather(GetLevelId()).IsRaining)
 GetRecipeByRecipeId = MethodCacher(
@@ -37,6 +48,7 @@ UnRegisterEntityAOIEvent = MethodCacher(
 
 
 __all__ = [
+    "CheckChunkState",
     "GetRecipesByInput",
     "GetRecipesByResult",
     "GetRecipeByRecipeId",
