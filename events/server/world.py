@@ -254,3 +254,17 @@ class OnContainerFillLoottableServerEvent(ServerEvent):
 
     def SetDirty(self):
         self.dirty = self._orig["dirty"] = True
+
+
+class OnScriptTickServer(ServerEvent):
+    name = "OnScriptTickServer"
+
+    def __init__(self):
+        pass
+
+    @classmethod
+    def unmarshal(cls, data=None):
+        return cls()
+
+    def marshal(self):
+        return {}

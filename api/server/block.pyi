@@ -158,6 +158,20 @@ GetBlockStatesFromAuxValue = MethodCacher(
 )
 MayPlace = MethodCacher(lambda: CF.CreateBlockInfo(GetLevelId()).MayPlace)
 
+_spawnResources = MethodCacher(
+    lambda: CF.CreateBlockInfo(GetLevelId()).SpawnResources
+)
+
+def SpawnResources(
+    dim: int,
+    pos: tuple[int, int, int],
+    block_name: str,
+    aux_value: int = 0,
+    probability: float = 1.0,
+) -> bool:
+    "产生方块的原版随机掉落 (不适用于实体方块)"
+    return _spawnResources(block_name, pos, aux_value, probability, 0, dim)
+
 __all__ = [
     "AddBlocksToBlockRemoveListener",
     "GetBlockEntityData",
@@ -180,5 +194,6 @@ __all__ = [
     "SetBlock",
     "SetLiquidBlock",
     "SetBlockEntityData",
+    "SpawnResources",
     "UpdateBlockStates",
 ]

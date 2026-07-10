@@ -31,8 +31,13 @@ RegisterQueryMolang = MethodCacher(
     lambda: CF.CreateQueryVariable(GetLevelId()).Register
 )
 
+GetCurrentDimension = MethodCacher(
+    lambda: CF.CreateGame(GetLevelId()).GetCurrentDimension
+)
+
 
 __all__ = [
+    "GetCurrentDimension",
     "GetRecipesByInput",
     "GetRecipesByResult",
     "SetQueryMolang",

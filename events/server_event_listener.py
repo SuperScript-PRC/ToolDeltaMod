@@ -70,9 +70,9 @@ def dynListen(event, listener, priority=0):
     global system_inited
     if priority not in event_listeners or event not in event_listeners[priority]:
 
-        def event_bus_handler(args):
+        def event_bus_handler(*args):
             # type: (dict) -> None
-            event_ins = event.unmarshal(args)
+            event_ins = event.unmarshal(*args)
             for cb in event_listeners[priority][event]:
                 cb(event_ins)
 
