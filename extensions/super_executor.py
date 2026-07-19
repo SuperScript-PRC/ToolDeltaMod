@@ -1,3 +1,4 @@
+# coding: utf-8
 class SuperExecutorMeta(type):
     """
     类方法覆盖执行类。
