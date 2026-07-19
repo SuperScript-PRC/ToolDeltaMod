@@ -1,3 +1,4 @@
+# coding: utf-8
 from mod.client.extraClientApi import GetEngineCompFactory, GetLevelId
 from ..common.cacher import MethodCacher
 
