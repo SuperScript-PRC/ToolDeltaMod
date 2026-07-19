@@ -1,3 +1,4 @@
+# coding: utf-8
 # TYPE_CHECKING
 if 0:
     import typing
