@@ -53,6 +53,10 @@ def GetPos(entity_id):
     # type: (str) -> tuple[float, float, float]
     return CF.CreatePos(entity_id).GetPos()
 
+def GetFootPos(entity_id):
+    # type: (str) -> tuple[float, float, float]
+    return CF.CreatePos(entity_id).GetFootPos()
+
 
 def SetMotion(entity_id, motion):
     # type: (str, tuple[float, float, float]) -> bool
@@ -99,6 +103,7 @@ __all__ = [
     "GetEntityType",
     "GetEntityTypeFamily",
     "GetPos",
+    "GetFootPos",
     "Hurt",
     "AddEffectToEntity",
     "RemoveEffectFromEntity",
