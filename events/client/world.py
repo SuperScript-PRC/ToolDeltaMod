@@ -29,3 +29,16 @@ class GameRenderTickEvent(ClientEvent):
 
     def marshal(self):
         return {}
+
+class LoadClientAddonScriptsAfter(ClientEvent):
+    name = "LoadClientAddonScriptsAfter"
+
+    def __init__(self):
+        pass
+
+    @classmethod
+    def unmarshal(cls, _):
+        return cls()
+
+    def marshal(self):
+        return {}

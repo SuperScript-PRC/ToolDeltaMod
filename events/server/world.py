@@ -24,6 +24,18 @@ class ClientLoadAddonsFinishServerEvent(ServerEvent):
             "playerId": self.playerId,
         }
 
+class LoadServerAddonScriptsAfter(ServerEvent):
+    name = "LoadServerAddonScriptsAfter"
+
+    def __init__(self):
+        pass
+
+    @classmethod
+    def unmarshal(cls, _):
+        return cls()
+
+    def marshal(self):
+        return {}
 
 class AddServerPlayerEvent(ServerEvent):
     name = "AddServerPlayerEvent"
