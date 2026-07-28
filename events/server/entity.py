@@ -3,6 +3,61 @@
 from ..basic import ServerEvent
 
 
+class AddEntityServerEvent(ServerEvent):
+    name = "AddEntityServerEvent"
+
+    def __init__(
+        self,
+        id,  # type: str
+        posX,  # type: float
+        posY,  # type: float
+        posZ,  # type: float
+        dimensionId,  # type: int
+        isBaby,  # type: bool
+        engineTypeStr,  # type: str
+        itemName="",  # type: str
+        auxValue=0,  # type: int
+    ):
+        self.id = id
+        self.posX = posX
+        self.posY = posY
+        self.posZ = posZ
+        self.dimensionId = dimensionId
+        self.isBaby = isBaby
+        self.engineTypeStr = engineTypeStr
+        self.itemName = itemName
+        self.auxValue = auxValue
+
+    @classmethod
+    def unmarshal(cls, data):
+        # type: (dict) -> AddEntityServerEvent
+        return cls(
+            id=data["id"],
+            posX=data["posX"],
+            posY=data["posY"],
+            posZ=data["posZ"],
+            dimensionId=data["dimensionId"],
+            isBaby=data["isBaby"],
+            engineTypeStr=data["engineTypeStr"],
+            itemName=data.get("itemName", ""),
+            auxValue=data.get("auxValue", 0),
+        )
+
+    def marshal(self):
+        # type: () -> dict
+        return {
+            "id": self.id,
+            "posX": self.posX,
+            "posY": self.posY,
+            "posZ": self.posZ,
+            "dimensionId": self.dimensionId,
+            "isBaby": self.isBaby,
+            "engineTypeStr": self.engineTypeStr,
+            "itemName": self.itemName,
+            "auxValue": self.auxValue,
+        }
+
+
 class EntityDieLoottableAfterServerEvent(ServerEvent):
     name = "EntityDieLoottableAfterServerEvent"
 

@@ -1,5 +1,6 @@
 # coding=utf-8
 from mod.server.extraServerApi import GetEngineCompFactory, GetLevelId
+from ...internal import GetServer
 from ..common.cacher import MethodCacher
 
 CF = GetEngineCompFactory()
@@ -32,7 +33,9 @@ def CheckChunkState(dim, pos):
     """判断指定位置所在区块是否加载完成。"""
     return _checkChunkState(dim, pos)
 
-
+CreateExplosion = MethodCacher(
+    lambda: GetEngineCompFactory().CreateExplosion(GetLevelId()).CreateExplosion
+)
 GetLocalTime = MethodCacher(lambda: CF.CreateDimension(GetLevelId()).GetLocalTime)
 IsRaining = MethodCacher(lambda: CF.CreateWeather(GetLevelId()).IsRaining)
 GetRecipeByRecipeId = MethodCacher(
@@ -49,10 +52,11 @@ UnRegisterEntityAOIEvent = MethodCacher(
 
 __all__ = [
     "CheckChunkState",
+    "CreateExplosion",
+    "GetLocalTime",
+    "GetRecipeByRecipeId",
     "GetRecipesByInput",
     "GetRecipesByResult",
-    "GetRecipeByRecipeId",
-    "GetLocalTime",
     "GetSeed",
     "IsRaining",
     "RegisterEntityAOIEvent",

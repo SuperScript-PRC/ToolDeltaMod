@@ -10,6 +10,9 @@ GetEntitiesInSquareArea = MethodCacher(
     lambda: CF.CreateGame(GetLevelId()).GetEntitiesInSquareArea
 )
 
+def CreateEntity(dim, pos, entity_type, rot=(0.0, 0.0)):
+    # type: (int, tuple[float, float, float], str, tuple[float, float]) -> str | None
+    return GetServer().CreateEngineEntityByTypeStr(entity_type, pos, rot, dim)
 
 def GetEntitiesBySelector(selector, from_entity=""):
     # type: (str, str) -> list[str]
@@ -96,19 +99,20 @@ def HasEffect(entity_id, effect_name):
 
 
 __all__ = [
-    "GetEntityDimension",
-    "GetEntitiesInSquareArea",
-    "GetEntitiesBySelector",
+    "AddEffectToEntity",
+    "CreateEntity",
+    "DestroyEntity",
     "GetDroppedItem",
+    "GetEntitiesBySelector",
+    "GetEntitiesInSquareArea",
+    "GetEntityDimension",
     "GetEntityType",
     "GetEntityTypeFamily",
-    "GetPos",
     "GetFootPos",
-    "Hurt",
-    "AddEffectToEntity",
-    "RemoveEffectFromEntity",
+    "GetPos",
     "HasEffect",
-    "SpawnDroppedItem",
+    "Hurt",
+    "RemoveEffectFromEntity",
     "SetMotion",
-    "DestroyEntity",
+    "SpawnDroppedItem",
 ]
