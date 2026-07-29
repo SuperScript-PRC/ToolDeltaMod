@@ -128,6 +128,47 @@ class ModBlockEntityLoadedClientEvent(ClientEvent):
             "blockName": self.blockName,
         }
 
+class ModBlockEntityTickClientEvent(ClientEvent):
+    name = "ModBlockEntityTickClientEvent"
+
+    def __init__(
+        self,
+        posX,  # type: int
+        posY,  # type: int
+        posZ,  # type: int
+        dimensionId,  # type: int
+        blockName,  # type: str
+    ):
+        self.posX = posX
+        """ 自定义方块实体的位置X """
+        self.posY = posY
+        """ 自定义方块实体的位置Y """
+        self.posZ = posZ
+        """ 自定义方块实体的位置Z """
+        self.dimensionId = dimensionId
+        """ 维度id """
+        self.blockName = blockName
+        """ 方块的identifier，包含命名空间及名称 """
+
+    @classmethod
+    def unmarshal(cls, data):
+        return cls(
+            posX=data["posX"],
+            posY=data["posY"],
+            posZ=data["posZ"],
+            dimensionId=data["dimensionId"],
+            blockName=data["blockName"],
+        )
+
+    def marshal(self):
+        # type: () -> dict
+        return {
+            "posX": self.posX,
+            "posY": self.posY,
+            "posZ": self.posZ,
+            "dimensionId": self.dimensionId,
+            "blockName": self.blockName,
+        }
 
 class ModBlockEntityRemoveClientEvent(ClientEvent):
     name = "ModBlockEntityRemoveClientEvent"
