@@ -303,6 +303,10 @@ class UImage(UBaseCtrl):
         self.base.SetSpriteUV(uv)
         self.base.SetSpriteUVSize(uv_size)
 
+    def Rotate(self, angle):
+        # type: (float) -> None
+        self.base.Rotate(angle)
+
 
 class UButton(UBaseCtrl):
     def __init__(self, root, base):
