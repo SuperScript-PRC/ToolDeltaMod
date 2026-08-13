@@ -235,14 +235,7 @@ def clientRemoveActiveSync(sync):
     client_active_syncs.pop(sync.sync_id, None)
 
 
-@ServerDelSync.Listen()
-def onServerDelSync(event):
-    # type: (ServerDelSync) -> None
-    """Sync GC 目前什么也不做, 因为同步被掐断的时候服务端理应通知客户端退出 UI"""
-    if DEBUG:
-        logger.info("[SYNC] Server request pop cli sync {}".format(event.sync_name))
-    # server_sync_pool.pop(event.sync_name, None)
-    pass
+
 
 
 @ServerInitCallback()
@@ -314,7 +307,14 @@ def onClientInit():
                         sync_data[EVENT_KEY]
                     )
                 )
-
+    @ServerDelSync.Listen()
+    def onServerDelSync(event):
+        # type: (ServerDelSync) -> None
+        """Sync GC 目前什么也不做, 因为同步被掐断的时候服务端理应通知客户端退出 UI"""
+        if DEBUG:
+            logger.info("[SYNC] Server request pop cli sync {}".format(event.sync_name))
+        # server_sync_pool.pop(event.sync_name, None)
+        pass
 
 __all__ = [
     "S2CSync",
