@@ -1,16 +1,19 @@
 # coding=utf-8
 import mod.client.extraClientApi as clientApi
-from ..events.service import ClientListenerService
+
+from ..events.event_bus import GetMCClientEventBus
+from ..events.service import EventListenerService
 from ..internal import GetModName
 from .elem_comp import UBaseCtrl
-from .utils import UIPath, Binder
+from .utils import Binder, UIPath
 
 if 0:
     import typing
-    from ._ui_typing import ScreenNode as _ScreenNode
+
     from ._ui_typing import (
         CustomUIScreenProxy as _CustomUIControlProxy,
     )
+    from ._ui_typing import ScreenNode as _ScreenNode
 
 
 ScreenNode = clientApi.GetScreenNodeCls()
@@ -19,7 +22,7 @@ ScreenProxy = clientApi.GetUIScreenProxyCls()
 SUPPORT_DYNA_BINDING = True
 
 
-class ToolDeltaScreen(ClientListenerService):
+class ToolDeltaScreen(EventListenerService):
     _ATTR_EVENT_LISTENER = "_tdscreen_event_listen"
     _ATTR_EVENT_LISTENER_PRIORITY = "_tdscreen_event_listen_priority"
 
@@ -29,7 +32,7 @@ class ToolDeltaScreen(ClientListenerService):
 
     def __init__(self, screen_name, screen_instance, params=None):
         # type: (str, _ScreenNode | _CustomUIControlProxy, dict | None) -> None
-        ClientListenerService.__init__(self)
+        EventListenerService.__init__(self, GetMCClientEventBus())
         self._screen_name = screen_name
         self._screen_instance = screen_instance
         self._init_params = params or {}
@@ -233,7 +236,6 @@ class ToolDeltaScreen(ClientListenerService):
         _removeActiveToolDeltaScreen(self)
         self._activated = False
         self.disable_listeners()
-        self._disable_delayed_listeners()
 
     def _remove_ctrl(self, ctrl):
         # type: (UBaseCtrl) -> bool
