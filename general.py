@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-from .internal import SetClient, SetServer
+from .internal import SetClient, SetServer, Runtime as _Runtime
 
 
 # TYPE_CHECKING
@@ -57,6 +57,8 @@ def ServerInitCallback(priority=0):
     def decorator(func):
         # type: (FuncT) -> FuncT
         extra_server_init_register_funcs.setdefault(priority, set()).add(func)
+        if _Runtime.server is not None:
+            func()
         return func
 
     return decorator
@@ -68,6 +70,8 @@ def ClientInitCallback(priority=0):
     def decorator(func):
         # type: (FuncT) -> FuncT
         extra_client_init_register_funcs.setdefault(priority, set()).add(func)
+        if _Runtime.client is not None:
+            func()
         return func
 
     return decorator
