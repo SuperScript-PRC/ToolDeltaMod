@@ -6,7 +6,7 @@ from ..events.client.ui import GridComponentSizeChangedClientEvent
 from .utils import UIPath
 
 # TYPE_CHECKING
-if 0:
+if 0>1:
     import typing
     from .general_screen import ToolDeltaScreen
     from ._ui_typing import *

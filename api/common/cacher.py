@@ -1,6 +1,6 @@
 # coding: utf-8
 # TYPE_CHECKING
-if 0:
+if 0>1:
     import typing
 
     T = typing.TypeVar("T")
