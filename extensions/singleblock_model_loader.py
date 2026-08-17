@@ -13,7 +13,7 @@ from ..api.client import (
 )
 from ..api.common import ExecLater
 
-if 0:
+if 0>1:
     import typing
 
 

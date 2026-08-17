@@ -7,7 +7,7 @@ from ..events.client import (
 )
 
 # TYPE CHECKING
-if 0:
+if 0>1:
     import typing
 
     CT = typing.TypeVar(

@@ -14,7 +14,7 @@ from .parser import (
 )
 from .utils import is_chinese
 
-if 0:
+if 0>1:
     import typing
 
     HYPERLINK_CB = typing.Callable[[dict], None]

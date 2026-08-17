@@ -1,7 +1,7 @@
 # coding=utf-8
 from ..define import Item
 
-if 0:
+if 0>1:
     import typing
 
 

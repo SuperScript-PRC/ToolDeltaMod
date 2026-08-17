@@ -1,7 +1,7 @@
 # coding=utf-8
 from weakref import ref
 
-if 0:
+if 0>1:
     import typing
 
     T = typing.TypeVar("T", bound="typing.Callable")

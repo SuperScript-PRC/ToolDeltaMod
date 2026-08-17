@@ -3,7 +3,7 @@ from ..events.client import UiInitFinishedEvent
 from ..events.server import DelServerPlayerEvent
 from ..events.basic import CustomC2SEvent
 
-if 0:
+if 0>1:
     import typing
 
 player_completely_loaded_cbs = []  # type: list[typing.Callable[[str], None]]
