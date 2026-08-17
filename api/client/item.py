@@ -21,7 +21,10 @@ def GetItemTags(item_id, aux_value=0):
     basic_info = item_tags_pool.get(item_id)
     if basic_info is not None:
         return basic_info
-    tags = set(CF.CreateItem(GetLevelId()).GetItemTags(item_id, aux_value))
+    tags_list = CF.CreateItem(GetLevelId()).GetItemTags(item_id, aux_value)
+    if tags_list is None:
+        raise ValueError("Item id invalid: " + item_id)
+    tags = set(tags_list)
     item_tags_pool[item_id] = tags
     return tags
 

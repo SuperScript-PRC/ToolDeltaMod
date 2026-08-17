@@ -7,7 +7,7 @@ from ..internal import GetModName
 from .elem_comp import UBaseCtrl
 from .utils import Binder, UIPath
 
-if 0:
+if 0>1:
     import typing
 
     from ._ui_typing import (

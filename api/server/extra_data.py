@@ -1,7 +1,7 @@
 # coding=utf-8
 from mod.server.extraServerApi import GetEngineCompFactory
 
-if 0:
+if 0>1:
     import typing
 
     T = typing.TypeVar("T")

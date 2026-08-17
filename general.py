@@ -4,7 +4,7 @@ from .internal import SetClient, SetServer, Runtime as _Runtime
 
 
 # TYPE_CHECKING
-if 0:
+if 0>1:
     import typing
     from .mod_server import ToolDeltaModServer as Server
     from .mod_client import ToolDeltaModClient as Client

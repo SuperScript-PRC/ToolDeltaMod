@@ -1,4 +1,4 @@
-if 0:
+if 0>1:
     from .general_screen import ToolDeltaScreen
 
 # Really useful?

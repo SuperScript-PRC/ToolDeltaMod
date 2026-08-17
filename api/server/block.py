@@ -3,7 +3,7 @@ from mod.server.extraServerApi import GetEngineCompFactory, GetLevelId
 from ...define.block import BlockBasicInfo
 from ..common.cacher import MethodCacher
 
-if 0:
+if 0>1:
     from typing import Any
 
 CF = GetEngineCompFactory()

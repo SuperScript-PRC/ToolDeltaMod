@@ -6,7 +6,7 @@ from .event_bus import EventBus
 EventT = TypeVar("EventT", bound=BaseEvent)
 
 
-if 0:
+if 0>1:
     import typing
 
     CallT = TypeVar("CallT", bound=typing.Callable)

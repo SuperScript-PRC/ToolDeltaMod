@@ -6,7 +6,7 @@ from ...internal import (
 from ...general import ClientUninitCallback, ServerUninitCallback
 
 # TYPE_CHECKING
-if 0:
+if 0>1:
     import typing
 
     PT = typing.ParamSpec("PT")

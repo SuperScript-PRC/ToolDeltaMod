@@ -4,7 +4,7 @@ from threading import current_thread
 
 
 # TYPE_CHECKING
-if 0:
+if 0>1:
     from .mod_server import ToolDeltaModServer as Server
     from .mod_client import ToolDeltaModClient as Client
 # TYPE_CHECKING END

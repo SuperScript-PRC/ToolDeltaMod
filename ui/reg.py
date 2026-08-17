@@ -9,7 +9,7 @@ from .general_screen import ToolDeltaScreen
 from .room import _regist_content
 
 # TYPE_CHECKING
-if 0:
+if 0>1:
     import typing
 
     ToolDeltaScreenT = typing.TypeVar("ToolDeltaScreenT", bound="type[ToolDeltaScreen]")

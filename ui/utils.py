@@ -1,7 +1,7 @@
 # coding=utf-8
 import mod.client.extraClientApi as clientApi
 
-if 0:
+if 0>1:
     import typing
 
     FuncT = typing.TypeVar("FuncT", bound=typing.Callable)
