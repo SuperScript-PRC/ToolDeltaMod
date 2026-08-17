@@ -13,7 +13,7 @@ from ..events.client.sync import (
 from ..general import ServerInitCallback, ClientInitCallback
 from ..api.common import AsTimerFunc
 
-if 0:
+if 0>1:
     import typing
 
 # 主要用于 UI 信息的同步。
