@@ -119,6 +119,7 @@ class EventBus(Generic[SystemT]):
             listener,
             priority,
         )
+        print "EVENTBUS LISTEN", event.GetNamespace() or self.namespace, event.GetSystemName() or self.system_name, listener, self.system
 
     def _del_sys_event_listener(self, event, listener, priority=0):
         # type: (type[EventT], typing.Callable[[dict], None], int) -> None

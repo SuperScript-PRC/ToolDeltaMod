@@ -22,6 +22,11 @@ def NotifyToAll(event):
     GetServer().BroadcastToAllClient(event.name, event.marshal())
 
 
-def Broadcast(event):
+def ServerBroadcast(event):
     # type: (BaseEvent) -> None
     GetServer().BroadcastEvent(event.name, event.marshal())
+
+
+def ClientBroadcast(event):
+    # type: (BaseEvent) -> None
+    GetClient().BroadcastEvent(event.name, event.marshal())

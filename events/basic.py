@@ -23,9 +23,7 @@ class BaseEvent(object):
         return cls()
 
     def broadcast(self):
-        from .notify import Broadcast
-
-        Broadcast(self)
+        raise NotImplementedError("Not server or client event")
 
 
 class ServerEvent(BaseEvent):
@@ -43,6 +41,11 @@ class ServerEvent(BaseEvent):
 
         return GetMCServerEventBus().ListenEvent(cls, priority, static=True)
 
+    def broadcast(self):
+        from .notify import ServerBroadcast
+
+        ServerBroadcast(self)
+
 
 class ClientEvent(BaseEvent):
     name = "ClientEvent"
@@ -58,6 +61,11 @@ class ClientEvent(BaseEvent):
         from .event_bus import GetMCClientEventBus
 
         return GetMCClientEventBus().ListenEvent(cls, priority, static=True)
+
+    def broadcast(self):
+        from .notify import ClientBroadcast
+
+        ClientBroadcast(self)
 
 
 class CustomC2SEvent(ServerEvent):
