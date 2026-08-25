@@ -95,9 +95,6 @@ class EventBus(Generic[SystemT]):
         listeners = self.event_listeners.setdefault(priority, {}).setdefault(event, [])
         listeners.append(listener)
 
-        if "Server" in str(self.system) and event.name == "UiInitFinished":
-            raise ValueError("UiInitFinished event can not be listened on server")
-
     def _dyn_unlisten(self, event, listener, priority=0):
         # type: (type[EventT], typing.Callable[[EventT], None], int) -> None
         if (
@@ -119,7 +116,6 @@ class EventBus(Generic[SystemT]):
             listener,
             priority,
         )
-        print "EVENTBUS LISTEN", event.GetNamespace() or self.namespace, event.GetSystemName() or self.system_name, listener, self.system
 
     def _del_sys_event_listener(self, event, listener, priority=0):
         # type: (type[EventT], typing.Callable[[dict], None], int) -> None
