@@ -6,6 +6,12 @@ if 0>1:
     T = typing.TypeVar("T")
 # TYPE_CHECKING END
 
+try:
+    py2_long = long # type: ignore
+except NameError:
+    # now is py3
+    py2_long = type("_long_missing", (), {})
+
 NBT_BYTE = 1
 NBT_SHORT = 2
 NBT_INT = 3
@@ -149,11 +155,13 @@ def Py2NBT(arg):
                 and list_item is not None
             ):
                 raise ValueError(
-                    "NBTList can only contain int, float, str, bool, dict, None, not {}".format(
-                        list_item
+                    "NBTList can only contain int, float, str, bool, dict, None, not {}({})".format(
+                        list_item, type(list_item)
                     )
                 )
         return GenericList([Py2NBT(v) for v in arg])
+    elif isinstance(arg, py2_long):
+        return Long(arg)
     elif isinstance(arg, int):
         if -32768 <= arg <= 32767:
             return Short(arg)
@@ -179,8 +187,8 @@ def Py2NBT(arg):
         return None
     else:
         raise ValueError(
-            "NBT can only contain int, float, str, bool, dict, list, None, not {}".format(
-                arg
+            "NBT can only contain int, float, str, bool, dict, list, None, not {}({})".format(
+                arg, type(arg)
             )
         )
 
