@@ -4,9 +4,9 @@ from .event_bus import EventBus
 try:
     import typing
 
-    from .types import SystemLike  # type: ignore
+    from . import types
 
-    SystemT = typing.TypeVar("SystemT", bound=SystemLike)
+    SystemT = typing.TypeVar("SystemT", bound="types.SystemLike")
 
 except Exception:
     pass

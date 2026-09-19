@@ -4,12 +4,12 @@ from ..basic import BaseEvent
 
 EventT = TypeVar("EventT", bound=BaseEvent)
 T = TypeVar("T")
-SystemT = TypeVar("SystemT", bound="SystemLike")
+SystemT = TypeVar("SystemT", bound="types.SystemLike")
 
 try:
     import typing  # noqa # type: ignore
 
-    from .types import SystemLike  # noqa # type: ignore
+    from . import types
 
 except ImportError:
     pass
@@ -17,7 +17,7 @@ except ImportError:
 
 class EventBus(Generic[SystemT]):
     def __init__(self, system, namespace, system_name):
-        # type: (SystemLike, str, str) -> None
+        # type: (types.SystemLike, str, str) -> None
         self.system = system
         self.namespace = namespace
         self.system_name = system_name
