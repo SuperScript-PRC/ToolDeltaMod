@@ -9,7 +9,7 @@ SystemT = TypeVar("SystemT", bound="SystemLike")
 try:
     import typing  # noqa # type: ignore
 
-    from .types import SystemLike  # noqa # type: ignore
+    from ._types import SystemLike
 
 except ImportError:
     pass
