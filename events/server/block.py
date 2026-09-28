@@ -511,9 +511,10 @@ class BlockRemoveServerEvent(ServerEvent):
         cls,
         blocks,  # type: set[str]
     ):
-        from ...api.server import AddBlocksToBlockRemoveListener
+        from ..._server import CF, LEVEL_ID
 
-        AddBlocksToBlockRemoveListener(blocks)
+        for block in blocks:
+            CF.CreateBlockUseEventWhiteList(LEVEL_ID).AddBlockItemListenForUseEvent(block)
         return cls
 
 

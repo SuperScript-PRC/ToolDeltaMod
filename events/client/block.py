@@ -80,9 +80,10 @@ class ClientBlockUseEvent(ClientEvent):
         cls,
         blocks,  # type: set[str]
     ):
-        from ...api.client import AddBlockUseListener
+        from ..._client import CF, LEVEL_ID
 
-        AddBlockUseListener(blocks)
+        for block in blocks:
+            CF.CreateBlockUseEventWhiteList(LEVEL_ID).AddBlockItemListenForUseEvent(block)
         return cls
 
 

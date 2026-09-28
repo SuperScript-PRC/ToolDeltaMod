@@ -1,7 +1,7 @@
 # coding=utf-8
 from weakref import ref
 from ..define import UICtrlPosData, Item
-from ..api.common import ExecLater
+from ..utils.timer import ExecLater
 from ..events.client.ui import GridComponentSizeChangedClientEvent
 from .utils import UIPath
 
