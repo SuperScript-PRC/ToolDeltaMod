@@ -44,7 +44,7 @@ class ServerEvent(BaseEvent):
     def broadcast(self):
         from .notify import ServerBroadcast
 
-        ServerBroadcast(self)
+        return ServerBroadcast(self)
 
 
 class ClientEvent(BaseEvent):
@@ -65,7 +65,7 @@ class ClientEvent(BaseEvent):
     def broadcast(self):
         from .notify import ClientBroadcast
 
-        ClientBroadcast(self)
+        return ClientBroadcast(self)
 
 
 class CustomC2SEvent(ServerEvent):
