@@ -1,5 +1,11 @@
+# coding=utf-8
 from ..internal import GetClient, GetServer
 from .basic import BaseEvent, CustomC2SEvent, CustomS2CEvent
+
+if 0 > 1:  # noqa: PLR0133
+    import typing
+
+    ET = typing.TypeVar("ET", bound="BaseEvent")
 
 
 def NotifyToServer(event):
@@ -23,10 +29,14 @@ def NotifyToAll(event):
 
 
 def ServerBroadcast(event):
-    # type: (BaseEvent) -> None
-    GetServer().BroadcastEvent(event.name, event.marshal())
+    # type: (ET) -> ET
+    event_dct = event.marshal()
+    GetServer().BroadcastEvent(event.name, event_dct)
+    return event.unmarshal(event_dct)
 
 
 def ClientBroadcast(event):
-    # type: (BaseEvent) -> None
-    GetClient().BroadcastEvent(event.name, event.marshal())
+    # type: (ET) -> ET
+    event_dct = event.marshal()
+    GetClient().BroadcastEvent(event.name, event_dct)
+    return event.unmarshal(event_dct)
