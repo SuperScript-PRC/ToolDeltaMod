@@ -41,6 +41,18 @@ class ServerEvent(BaseEvent):
 
         return GetMCServerEventBus().ListenEvent(cls, priority, static=True)
 
+    @classmethod
+    def GetNamespace(cls):
+        from mod.server.extraServerApi import GetEngineNamespace
+
+        return GetEngineNamespace()
+
+    @classmethod
+    def GetSystemName(cls):
+        from mod.server.extraServerApi import GetEngineSystemName
+
+        return GetEngineSystemName()
+
     def broadcast(self):
         from .notify import ServerBroadcast
 
@@ -61,6 +73,18 @@ class ClientEvent(BaseEvent):
         from .event_bus import GetMCClientEventBus
 
         return GetMCClientEventBus().ListenEvent(cls, priority, static=True)
+
+    @classmethod
+    def GetNamespace(cls):
+        from mod.client.extraClientApi import GetEngineNamespace
+
+        return GetEngineNamespace()
+
+    @classmethod
+    def GetSystemName(cls):
+        from mod.client.extraClientApi import GetEngineSystemName
+
+        return GetEngineSystemName()
 
     def broadcast(self):
         from .notify import ClientBroadcast

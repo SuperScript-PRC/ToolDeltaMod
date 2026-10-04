@@ -159,7 +159,7 @@ class ToolDeltaScreen(EventListenerService):
             self.screenNode = screenNode
             self._super_screen_ins = cls(
                 screenName,
-                screenNode,
+                self,
             )
 
         def OnCreate(self):
@@ -295,8 +295,12 @@ class ToolDeltaScreen(EventListenerService):
             raw_func = self._make_dyna_binding_func(binding_func, binding_name)
             Binder.binding(bind_flag, binding_name)(raw_func)
             func = self._bind_dyna_func(raw_func)
+            try:
+                self._screen_instance._process_default(func, self._get_dyna_screen_name())  # pyright: ignore[reportAttributeAccessIssue]
+            except Exception:
+                delattr(self._screen_instance, func.__name__)
+                raise
             self._dyna_bindings[key] = func
-            self._screen_instance._process_default(func, self._get_dyna_screen_name())  # pyright: ignore[reportAttributeAccessIssue]
 
         def DynaUnbinding(self, bind_flag, binding_name):
             # type: (int, str) -> None
@@ -320,10 +324,14 @@ class ToolDeltaScreen(EventListenerService):
                 raw_func
             )
             func = self._bind_dyna_func(raw_func)
+            try:
+                self._screen_instance._process_collection(  # pyright: ignore[reportAttributeAccessIssue]
+                    func, self._get_dyna_screen_name()
+                )
+            except Exception:
+                delattr(self._screen_instance, func.__name__)
+                raise
             self._dyna_bindings[key] = func
-            self._screen_instance._process_collection(  # pyright: ignore[reportAttributeAccessIssue]
-                func, self._get_dyna_screen_name()
-            )
 
         def DynaUnbindingCollection(self, bind_flag, collection_name):
             # type: (int, str) -> None
@@ -340,6 +348,10 @@ class ToolDeltaScreen(EventListenerService):
 
         def _get_dyna_screen_name(self):
             # type: () -> str
+            if self._screen_instance is not self._screen_node:
+                get_screen_name = getattr(self._screen_instance, "GetScreenName", None)
+                if get_screen_name is not None:
+                    return get_screen_name()
             return self._screen_node.screen_name or self._screen_node.full_name
 
         @staticmethod
@@ -353,21 +365,27 @@ class ToolDeltaScreen(EventListenerService):
             def _wrapper(screen_ins, *args):
                 return binding_func(*args)
 
-            _wrapper.__module__ = getattr(binding_func, "__module__", __name__)
-            _wrapper.__name__ = getattr(binding_func, "__name__", "dyna_binding")
-            if hasattr(binding_func, "func_name"):
-                _wrapper.func_name = getattr(binding_func, "func_name")
-            elif binding_name:
-                _wrapper.func_name = str(binding_name).strip("#%").replace(".", "_")
             return _wrapper
 
         def _bind_dyna_func(self, func):
             # type: (typing.Callable) -> typing.Callable
-            return func.__get__(self._screen_instance, self._screen_instance.__class__)
+            # gui passes func.__name__ to native code, which resolves it on the
+            # registered instance. Keep each wrapper discoverable and separate
+            # from static methods and other bindings of the same callback.
+            sequence = getattr(self, "_dyna_binding_sequence", 0) + 1
+            name = "_td_dyna_binding_%s" % sequence
+            while hasattr(self._screen_instance, name):
+                sequence += 1
+                name = "_td_dyna_binding_%s" % sequence
+            self._dyna_binding_sequence = sequence
+            func.__name__ = name
+            bound = func.__get__(self._screen_instance, self._screen_instance.__class__)
+            setattr(self._screen_instance, name, bound)
+            return bound
 
         def _dyna_unbinding(self, key):
             # type: (tuple[int, str, str | None]) -> None
-            func = self._dyna_bindings.pop(key, None)
+            func = self._dyna_bindings.get(key)
             if func is None:
                 return
             if key[2] is None:
@@ -378,6 +396,8 @@ class ToolDeltaScreen(EventListenerService):
                 self._screen_instance._process_collection_unregister(  # pyright: ignore[reportAttributeAccessIssue]
                     func, self._get_dyna_screen_name()
                 )
+            del self._dyna_bindings[key]
+            delattr(self._screen_instance, func.__name__)
 
         def _clear_dyna_bindings(self):
             # type: () -> None

@@ -219,8 +219,10 @@ class ItemPushInCustomContainerServerEvent(ServerEvent):
 
     @classmethod
     def unmarshal(cls, data):
+        # 物品字段的键名有 itemDict / item 两种写法, 都接受
+        item_dict = data.get("itemDict") or data["item"]
         return cls(
-            item=Item.from_dict(data["itemDict"]),
+            item=Item.from_dict(item_dict),
             collectionName=data["collectionName"],
             collectionIndex=data["collectionIndex"],
             x=data["x"],
@@ -233,7 +235,7 @@ class ItemPushInCustomContainerServerEvent(ServerEvent):
     def marshal(self):
         # type: () -> dict
         return {
-            "item": self.item.marshal(),
+            "itemDict": self.item.marshal(),
             "collectionName": self.collectionName,
             "collectionIndex": self.collectionIndex,
             "x": self.x,
@@ -282,8 +284,10 @@ class ItemPullOutCustomContainerServerEvent(ServerEvent):
 
     @classmethod
     def unmarshal(cls, data):
+        # 物品字段的键名有 itemDict / item 两种写法, 都接受
+        item_dict = data.get("itemDict") or data["item"]
         return cls(
-            item=Item.from_dict(data["itemDict"]),
+            item=Item.from_dict(item_dict),
             collectionName=data["collectionName"],
             collectionIndex=data["collectionIndex"],
             x=data["x"],
@@ -296,7 +300,7 @@ class ItemPullOutCustomContainerServerEvent(ServerEvent):
     def marshal(self):
         # type: () -> dict
         return {
-            "item": self.item.marshal(),
+            "itemDict": self.item.marshal(),
             "collectionName": self.collectionName,
             "collectionIndex": self.collectionIndex,
             "x": self.x,
