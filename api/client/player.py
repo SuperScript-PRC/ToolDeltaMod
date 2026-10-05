@@ -84,15 +84,21 @@ def GetLocalPlayerLevelByExp():
     return GetLevelByTotalExp(GetLocalPlayerTotalExp())
 
 
+def IsSneaking():
+    # type: () -> bool
+    return CF.CreatePlayer(GetLevelId()).isSneaking()
+
+
 __all__ = [
+    "GetAllPlayers",
+    "GetLevelByTotalExp",
+    "GetLocalPlayerHotbarAndInvItems",
+    "GetLocalPlayerId",
+    "GetLocalPlayerLevelByExp",
+    "GetLocalPlayerMainhandItem",
+    "GetLocalPlayerTotalExp",
     "GetNameById",
     "GetPlayerDimensionId",
-    "GetAllPlayers",
-    "GetLocalPlayerId",
     "GetPlayerMainhandItem",
-    "GetLocalPlayerMainhandItem",
-    "GetLocalPlayerHotbarAndInvItems",
-    "GetLocalPlayerTotalExp",
-    "GetLevelByTotalExp",
-    "GetLocalPlayerLevelByExp",
+    "IsSneaking",
 ]
