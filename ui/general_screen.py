@@ -187,6 +187,13 @@ class ToolDeltaScreen(EventListenerService):
         attrs = {}
         for key in dir(cls):
             attr = getattr(cls, key)
+            if not callable(attr) or not hasattr(attr, "binding_flags"):
+                continue
+            if not hasattr(attr, "binding_name"):
+                raise ValueError(
+                    "ToolDelta binding %s.%s.%s is missing binding_name"
+                    % (cls.__module__, cls.__name__, key)
+                )
             if hasattr(attr, "collection_name"):
 
                 def wrap(_func):
