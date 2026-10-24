@@ -46,10 +46,7 @@ class GetAllItemsResponse(CustomS2CEvent):
 
 @ServerInitCallback()
 def onServerInited():
-    from mod.server.extraServerApi import GetEngineCompFactory, GetLevelId
-
-    CF = GetEngineCompFactory()
-    levelId = GetLevelId()
+    from ..srv import CF, LEVEL_ID
 
     @DelServerPlayerEvent.Listen()
     def onDelPlayer(event):
@@ -63,7 +60,7 @@ def onServerInited():
         if player_id in client_already_get_allitems:
             GetAllItemsResponse(ok=False).send(player_id)
         else:
-            items = CF.CreateItem(levelId).GetLoadItems()
+            items = CF.CreateItem(LEVEL_ID).GetLoadItems()
             # if len(items) < 100:
             #     print("[ERROR] ITEMS COUNT TOO SMALL", items)
             GetAllItemsResponse(items).send(player_id)
@@ -89,12 +86,9 @@ def onClientReallyInited():
     def loadAllItems(_allitems):
         # type: (list[str]) -> None
         global allitems
-        from mod.client.extraClientApi import GetEngineCompFactory, GetLevelId
-
-        CF = GetEngineCompFactory()
-        levelId = GetLevelId()
+        from ..cli import CF, LEVEL_ID
         allitems = set(_allitems)
-        getTags = CF.CreateItem(levelId).GetItemTags
+        getTags = CF.CreateItem(LEVEL_ID).GetItemTags
         for item in allitems:
             for tag in getTags(item) or []:
                 allitems_by_tag.setdefault(tag, set()).add(item)

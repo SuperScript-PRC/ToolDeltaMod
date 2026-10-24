@@ -11,7 +11,7 @@ from ..events.client.sync import (
     ServerDelSync,
 )
 from ..general import ServerInitCallback, ClientInitCallback
-from ..api.common import AsTimerFunc
+from ..utils.timer import AsTimerFunc
 
 if 0>1:
     import typing

@@ -117,22 +117,20 @@ class Item(object):
         if cached is not None:
             return cached
         if InServerEnv():
-            from mod.server.extraServerApi import GetEngineCompFactory, GetLevelId
+            from ..srv import CF, LEVEL_ID
 
             raw_info = (
-                GetEngineCompFactory()
-                .CreateItem(GetLevelId())
+                CF.CreateItem(LEVEL_ID)
                 .GetItemBasicInfo(self.newItemName, self.newAuxValue)
             )
             if raw_info is None:
                 raise ValueError("Can't get basic info of " + self.newItemName)
             res = BasicItemInfo().unmarshal(raw_info)
         else:
-            from mod.client.extraClientApi import GetEngineCompFactory, GetLevelId
+            from ..cli import CF, LEVEL_ID
 
             res = BasicItemInfo().unmarshal(
-                GetEngineCompFactory()
-                .CreateItem(GetLevelId())
+                CF.CreateItem(LEVEL_ID)
                 .GetItemBasicInfo(self.newItemName, self.newAuxValue, self.isEnchanted)
             )
         itemBasicInfoPool[(self.newItemName, self.newAuxValue)] = res

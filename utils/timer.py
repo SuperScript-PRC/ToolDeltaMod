@@ -1,9 +1,9 @@
 # coding: utf-8
-from ...internal import (
+from ..internal import (
     inClientEnv,
     inServerEnv,
 )
-from ...general import ClientUninitCallback, ServerUninitCallback
+from ..general import ClientUninitCallback, ServerUninitCallback
 
 # TYPE_CHECKING
 if 0>1:
@@ -20,13 +20,13 @@ def ExecLater(t, func, *args, **kwargs):
     # type: (float, typing.Callable, typing.Any, typing.Any) -> None
     "执行延迟方法"
     if inServerEnv():
-        from mod.server.extraServerApi import GetEngineCompFactory, GetLevelId
+        from ..srv import CF, LEVEL_ID
 
-        LaterFunc = GetEngineCompFactory().CreateGame(GetLevelId()).AddTimer
+        LaterFunc = CF.CreateGame(LEVEL_ID).AddTimer
     elif inClientEnv():
-        from mod.client.extraClientApi import GetEngineCompFactory, GetLevelId
+        from ..cli import CF, LEVEL_ID
 
-        LaterFunc = GetEngineCompFactory().CreateGame(GetLevelId()).AddTimer
+        LaterFunc = CF.CreateGame(LEVEL_ID).AddTimer
     else:
         raise Exception("Not in client or server env")
     LaterFunc(t, func, *args, **kwargs)  # pyright: ignore[reportArgumentType]
@@ -61,14 +61,14 @@ def Repeat(t):
         # type: (typing.Callable[PT, typing.Any]) -> typing.Callable[PT, typing.Any]
         def inner(*args, **kwargs):
             if inClientEnv():
-                from mod.client.extraClientApi import GetEngineCompFactory, GetLevelId
+                from ..cli import CF, LEVEL_ID
 
-                game = GetEngineCompFactory().CreateGame(GetLevelId())
+                game = CF.CreateGame(LEVEL_ID)
                 pool = cTimerPool
             elif inServerEnv():
-                from mod.server.extraServerApi import GetEngineCompFactory, GetLevelId
+                from ..srv import CF, LEVEL_ID
 
-                game = GetEngineCompFactory().CreateGame(GetLevelId())
+                game = CF.CreateGame(LEVEL_ID)
                 pool = sTimerPool
             else:
                 raise RuntimeError("Not in client or server env")
@@ -83,9 +83,9 @@ def Repeat(t):
 
 @ServerUninitCallback()
 def onServerUninit():
-    from mod.server.extraServerApi import GetEngineCompFactory, GetLevelId
+    from ..srv import CF, LEVEL_ID
 
-    game = GetEngineCompFactory().CreateGame(GetLevelId())
+    game = CF.CreateGame(LEVEL_ID)
     for timer in sTimerPool:
         game.CancelTimer(timer)
     sTimerPool.clear()
@@ -93,9 +93,9 @@ def onServerUninit():
 
 @ClientUninitCallback()
 def onClientUninit():
-    from mod.client.extraClientApi import GetEngineCompFactory, GetLevelId
+    from ..cli import CF, LEVEL_ID
 
-    game = GetEngineCompFactory().CreateGame(GetLevelId())
+    game = CF.CreateGame(LEVEL_ID)
     for timer in cTimerPool:
         game.CancelTimer(timer)
     cTimerPool.clear()

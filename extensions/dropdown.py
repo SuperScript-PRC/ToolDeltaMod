@@ -1,7 +1,7 @@
 # coding=utf-8
 """Control-local dropdown for tooldelta_lib.combo_box; no ViewBinder required."""
-from skybluetech_scripts.tooldelta.api.client.ui import GetScreenSize
-from skybluetech_scripts.tooldelta.api.common import ExecLater
+from skybluetech_scripts.tooldelta.cli import CF, LEVEL_ID
+from skybluetech_scripts.tooldelta.utils.timer import ExecLater
 
 if 0>1:
     import typing
@@ -155,7 +155,7 @@ class Dropdown(object):
         # Resolution pixels cover at least the scaled UI canvas. Oversizing this
         # transparent click catcher is intentional; it is clipped by the screen.
         self._dismiss.SetPos((-x, -y))
-        self._dismiss.SetSize(GetScreenSize())
+        self._dismiss.SetSize(CF.CreateGame(LEVEL_ID).GetScreenSize())
         self._opened = True
         self._dismiss.SetVisible(True)
         self._popup.SetVisible(True)

@@ -514,7 +514,7 @@ class BlockRemoveServerEvent(ServerEvent):
         from ...srv import CF, LEVEL_ID
 
         for block in blocks:
-            CF.CreateBlockUseEventWhiteList(LEVEL_ID).AddBlockItemListenForUseEvent(block)
+            CF.CreateBlockInfo(LEVEL_ID).ListenOnBlockRemoveEvent(block, True)
         return cls
 
 
