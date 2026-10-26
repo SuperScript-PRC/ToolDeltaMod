@@ -212,6 +212,13 @@ class RicherTextCtrl(object):
         size_x = image.size_x or size_y  # square size
         img.SetSize((size_x, size_y))
         img.SetSprite(image.path)
+        if image.rgb_hex is not None:
+            r = ((image.rgb_hex >> 16) & 0xFF) / 255.0
+            g = ((image.rgb_hex >> 8) & 0xFF) / 255.0
+            b = (image.rgb_hex & 0xFF) / 255.0
+            img.SetSpriteColor((r, g, b))
+        if image.alpha is not None:
+            img.SetAlpha(image.alpha)
         self._put_control(img, img)
         return img
 

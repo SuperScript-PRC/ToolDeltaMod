@@ -1,7 +1,8 @@
 # coding=utf-8
 import re
+
 from ...utils.py_comp import py2_unicode
-from .define import Option, NewLine, Text, Image, ItemRender, HyperLink, Style
+from .define import HyperLink, Image, ItemRender, NewLine, Option, Style, Text
 
 tag_parser = re.compile(
     py2_unicode(r'(\w+)\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|(\S+))'), re.UNICODE
@@ -72,11 +73,19 @@ def parse_tags(
         elif tag_name == Image.name:
             size_x = params.get("size_x")
             size_y = params.get("size_y")
+            rgb = params.get("rgba")
+            alpha = params.get("alpha")
             if size_x is not None:
                 size_x = float(size_x)
             if size_y is not None:
                 size_y = float(size_y)
-            res.append(Image(params["path"], size_x, size_y))
+            if rgb is not None:
+                if rgb.startswith("#"):
+                    rgb = rgb[1:]
+                rgb = int(rgb, base=16)
+            if alpha is not None:
+                alpha = float(alpha)
+            res.append(Image(params["path"], size_x, size_y, rgb, alpha))
         elif tag_name == ItemRender.name:
             scale = params.get("scale")
             if scale is not None:
