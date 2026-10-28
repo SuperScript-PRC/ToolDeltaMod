@@ -376,9 +376,9 @@ class ToolDeltaScreen(EventListenerService):
 
         def _bind_dyna_func(self, func):
             # type: (typing.Callable) -> typing.Callable
-            # gui passes func.__name__ to native code, which resolves it on the
-            # registered instance. Keep each wrapper discoverable and separate
-            # from static methods and other bindings of the same callback.
+            # Native callbacks resolve func.__name__ on the screen instance.
+            # Keep that entry point free of ViewBinder metadata: the engine's
+            # process_binding scan would otherwise register it a second time.
             sequence = getattr(self, "_dyna_binding_sequence", 0) + 1
             name = "_td_dyna_binding_%s" % sequence
             while hasattr(self._screen_instance, name):
@@ -387,7 +387,17 @@ class ToolDeltaScreen(EventListenerService):
             self._dyna_binding_sequence = sequence
             func.__name__ = name
             bound = func.__get__(self._screen_instance, self._screen_instance.__class__)
-            setattr(self._screen_instance, name, bound)
+
+            def dispatch(screen_ins, *args):
+                return bound(*args)
+
+            dispatch.__name__ = name
+            setattr(
+                self._screen_instance,
+                name,
+                dispatch.__get__(self._screen_instance, self._screen_instance.__class__),
+            )
+            # Retain the decorated callable privately for registration/unbinding.
             return bound
 
         def _dyna_unbinding(self, key):
