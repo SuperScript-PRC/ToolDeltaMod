@@ -81,6 +81,21 @@ class OnScriptTickClient(ClientEvent):
         return {}
 
 
+class OnLocalPlayerStopLoading(ClientEvent):
+    name = "OnLocalPlayerStopLoading"
+
+    def __init__(self, playerId):
+        # type: (str) -> None
+        self.playerId = playerId
+
+    @classmethod
+    def unmarshal(cls, data):
+        return cls(playerId=data["playerId"])
+
+    def marshal(self):
+        return {"playerId": self.playerId}
+
+
 class GameRenderTickEvent(ClientEvent):
     name = "GameRenderTickEvent"
 
