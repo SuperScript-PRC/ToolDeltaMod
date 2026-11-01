@@ -1,11 +1,17 @@
 # coding=utf-8
-from ..general import ServerInitCallback, ClientInitCallback
+from ..general import (
+    ServerInitCallback,
+    ClientInitCallback,
+    ServerUninitCallback,
+    ClientUninitCallback,
+)
+from ..internal import InClientEnv
 from ..events.basic import CustomC2SEvent, CustomS2CEvent
 from ..events.client import UiInitFinishedEvent
 from ..events.server import DelServerPlayerEvent
 
 allitems = set()  # type: set[str]
-allitems_by_tag = {}  # type: dict[str, set[str]]
+_items_by_tag_cache = {False: {}, True: {}}  # type: dict[bool, dict[str, set[str]]]
 client_already_get_allitems = set()  # type: set[str]
 items_getted_callback = []
 game_loaded = False
@@ -46,6 +52,7 @@ class GetAllItemsResponse(CustomS2CEvent):
 
 @ServerInitCallback()
 def onServerInited():
+    _items_by_tag_cache[False].clear()
     from ..srv import CF, LEVEL_ID
 
     @DelServerPlayerEvent.Listen()
@@ -68,6 +75,8 @@ def onServerInited():
 
 @ClientInitCallback()
 def onClientReallyInited():
+    _items_by_tag_cache[True].clear()
+
     @GetAllItemsResponse.Listen()
     def onGetResponse(event):
         # type: (GetAllItemsResponse) -> None
@@ -86,12 +95,7 @@ def onClientReallyInited():
     def loadAllItems(_allitems):
         # type: (list[str]) -> None
         global allitems
-        from ..cli import CF, LEVEL_ID
         allitems = set(_allitems)
-        getTags = CF.CreateItem(LEVEL_ID).GetItemTags
-        for item in allitems:
-            for tag in getTags(item) or []:
-                allitems_by_tag.setdefault(tag, set()).add(item)
 
     @UiInitFinishedEvent.Listen()
     def onStartGame(event):
@@ -100,6 +104,16 @@ def onClientReallyInited():
             return
         game_loaded = True
         GetAllItemsRequest().send()
+
+
+@ServerUninitCallback()
+def _clear_server_tag_cache():
+    _items_by_tag_cache[False].clear()
+
+
+@ClientUninitCallback()
+def _clear_client_tag_cache():
+    _items_by_tag_cache[True].clear()
 
 
 def GetAllItems():
@@ -115,8 +129,30 @@ def GetAllItems():
 
 def GetItemsByTag(tag):
     # type: (str) -> set[str]
-    "ClientSide function"
-    return allitems_by_tag.get(tag, set())
+    """双端函数。通过原生接口获取物品标签与方块标签下的 ID 并集。"""
+    is_client = InClientEnv()
+    cache = _items_by_tag_cache[is_client]
+    items = cache.get(tag)
+    if items is not None:
+        return items
+
+    if is_client:
+        from ..cli import CF, LEVEL_ID
+    else:
+        from ..srv import CF, LEVEL_ID
+
+    items = set(
+        entry["itemName"]
+        for entry in CF.CreateItem(LEVEL_ID).LookupItemsByItemTag(tag)
+    )
+    items.update(
+        entry["blockName"]
+        for entry in CF.CreateBlock(LEVEL_ID).LookupBlocksByBlockTag(tag)
+    )
+    # 初始化早期查询可能为空，后续仍需向引擎查询。
+    if items:
+        cache[tag] = items
+    return items
 
 
 def AddItemGettedCallback(callback):
